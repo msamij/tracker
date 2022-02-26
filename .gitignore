@@ -1,5 +1,6 @@
 env/
 .vim/
+node_modules/
+build/
 .prettierignore
 README.md
-db.sqlite3
