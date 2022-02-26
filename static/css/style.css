@@ -1,0 +1,232 @@
+:root {
+  --color-primary-1: #ffb4a2;
+  --color-primary-2: #f4a261;
+
+  --color-secondary-1: #4ebeba;
+  --color-secondary-2: rgba(70, 209, 204, 0.767);
+
+  --color-light-1: #fff;
+  --color-light-2: #f3f3f4;
+  --color-light-3: #f8f9fa;
+
+  --color-gold: #866118;
+  --color-grey: #808080;
+
+  --color-dark: #2d3436;
+}
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: inherit;
+}
+
+html {
+  box-sizing: border-box;
+  font-size: 62.5%;
+}
+
+body {
+  height: 100vh;
+  font-family: 'Open Sans', sans-serif;
+  line-height: 1.5;
+  display: flex;
+}
+@media only screen and (max-width: 48em) {
+  body {
+    flex-direction: column;
+  }
+}
+
+.box-left {
+  background-image: linear-gradient(
+    to right bottom,
+    var(--color-primary-1),
+    var(--color-primary-2)
+  );
+  height: 100%;
+  flex-basis: 45%;
+  padding: 8rem 5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+@media only screen and (max-width: 64em) {
+  .box-left {
+    padding: 5rem 2rem;
+  }
+}
+@media only screen and (max-width: 48em) {
+  .box-left {
+    align-items: center;
+    padding: 2rem 0;
+  }
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.header__logo {
+  height: 4rem;
+  width: 4rem;
+  fill: var(--color-gold);
+  margin-bottom: 2rem;
+}
+@media only screen and (max-width: 64em) {
+  .header__logo {
+    height: 3rem;
+    width: 3rem;
+  }
+}
+
+.header__heading--primary {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--color-gold);
+}
+@media only screen and (max-width: 64em) {
+  .header__heading--primary {
+    font-size: 1.8rem;
+  }
+}
+
+.header__heading--secondary {
+  display: block;
+}
+
+.footer__items {
+  list-style: none;
+  display: flex;
+}
+
+.footer__item:not(:last-child) {
+  margin-right: 3rem;
+}
+
+.footer__link {
+  text-decoration: none;
+  font-size: 1.3rem;
+  color: var(--color-gold);
+}
+
+.box-right {
+  height: 100%;
+  background-color: var(--color-light-3);
+  flex-basis: 55%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.message {
+  color: var(--color-light-3);
+  background-color: var(--color-primary-2);
+  font-size: 1.3rem;
+  padding: 1rem 2.5rem;
+  border-radius: 3px;
+  animation: fadein 0.3s ease-in 0s 1;
+  visibility: hidden;
+  opacity: 0;
+}
+
+.form__heading {
+  color: var(--color-grey);
+  margin: 3rem 0;
+  font-size: 2rem;
+  font-weight: 600;
+}
+@media only screen and (max-width: 48em) {
+  .form__heading {
+    margin-top: 1.5rem;
+    margin-bottom: 2.8rem;
+  }
+}
+
+.form__input {
+  font-family: inherit;
+  border: none;
+  font-size: 1.3rem;
+  padding: 1rem 3rem;
+  border-radius: 0.8rem;
+  margin: 0 0 3rem 0;
+  width: 30rem;
+  background-color: var(--color-light-2);
+  border: 2px solid transparent;
+  transition: all 0.3s;
+}
+@media only screen and (max-width: 48em) {
+  .form__input {
+    margin: 0 0 1.5rem 0;
+  }
+}
+
+.form__input::placeholder {
+  color: var(--color-grey);
+}
+
+.form__input:focus {
+  outline: none;
+}
+
+.form__input:hover {
+  border: 2px solid var(--color-secondary-1);
+  background-color: var(--color-light-1);
+}
+
+.btn {
+  font-family: inherit;
+  border: none;
+  cursor: pointer;
+  background: none;
+}
+.btn:focus {
+  outline: none;
+}
+
+.btn-primary {
+  width: 25rem;
+  background-color: var(--color-secondary-1);
+  color: var(--color-light-1);
+  border-radius: 0.8rem;
+  padding: 1rem 1.5rem;
+  margin-bottom: 2rem;
+  transition: all 0.2s;
+  font-weight: 700;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.btn-primary:hover {
+  background-color: var(--color-secondary-2);
+}
+
+.btn__icon {
+  height: 1.5rem;
+  width: 1.5rem;
+  fill: var(--color-light-1);
+  margin-left: 0.5rem;
+  margin-top: 0.2rem;
+  transition: all 0.2s;
+}
+.btn-primary:hover .btn__icon {
+  margin-left: 0.7rem;
+}
+
+.btn-secondary {
+  color: var(--color-dark);
+  font-size: 1.3rem;
+  text-decoration: none;
+}

@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Tracker &mdash; main page{% endblock %}
+
+{% block font %}
+    <link
+      href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+{% endblock %}
+
+{% block javascript %}
+    <script defer src="{% static 'ts/build/index.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+    <div class="box-left">
+      <header class="header">
+        <svg class="header__logo">
+          <use xlink:href="{% static 'img/symbol-defs.svg' %}#icon-credit-card"></use>
+        </svg>
+        <h2 class="header__heading--primary">
+          Keep track of Your Incomes and Expenses
+          <span class="header__heading--secondary">in one place.</span>
+        </h2>
+      </header>
+
+      <footer class="footer">
+        <ul class="footer__items">
+          <li class="footer__item">
+            <a class="footer__link" href="#">Terms of Service</a>
+          </li>
+          <li class="footer__item">
+            <a class="footer__link" href="#">Privacy Policy</a>
+          </li>
+          <li class="footer__item">
+            <a class="footer__link" href="#">Contact Us</a>
+          </li>
+        </ul>
+      </footer>
+    </div>
+
+    <div class="box-right">
+      <form class="form">
+        <div class="message"></div>
+        {% csrf_token %}  
+        <h2 class="form__heading"><span>Signup</span> to continue</h2>
+        {{ form.username }} {{ form.password1 }} {{ form.password2 }}
+
+        <button type="submit" class="btn btn-primary" data-url="/signup/">
+          Create Account
+          <svg class="btn__icon">
+            <use xlink:href="{% static 'img/symbol-defs.svg' %}#icon-arrow-right2"></use>
+          </svg>
+        </button>
+        <a href="/login/" class="btn btn-secondary">Already have an account? Login</a>
+      </form>
+    </div>
+{% endblock %}

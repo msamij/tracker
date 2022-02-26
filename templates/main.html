@@ -1,0 +1,334 @@
+{% extends 'base.html' %} 
+{% load static %} 
+
+{% block title %}Tracker App &mdash;{% endblock %}
+
+{% block font %}
+    <link
+      href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;700&display=swap"
+      rel="stylesheet"
+    />
+{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/main.css' %}" />
+{% endblock %}
+
+{% block javascript %}
+    <script defer src="{% static 'ts/build/app.js' %}"></script>
+{% endblock %}
+
+
+{% block content %}
+  <div class="message"></div>
+  <div class="overlay"></div>
+  <form class="menu menu__item">
+    <input
+      type="text"
+      required
+      class="input input__item"
+      placeholder="title"
+    />
+    <input type="date" required class="input input__date" placeholder="date" />
+    <input
+      type="text"
+      required
+      class="input input__amount"
+      placeholder="amount"
+    />
+    <button type="submit" class="btn-primary btn-primary--orange" data-value="" >Save</button>
+  </form>
+
+  <form class="menu menu__category">
+    <input
+      type="text"
+      required
+      class="input input__category"
+      placeholder="category title"
+    />
+    <input type="date" required class="input input__date--category" placeholder="date" />
+    <button type="submit" class="btn-primary btn-primary--orange" data-value="">Save</button>
+  </form>
+
+  <main class="container">
+    <header class="header">
+      <svg class="header__logo">
+        <use
+          xlink:href="{% static 'img/symbol-defs.svg' %}#icon-credit-card"
+        ></use>
+      </svg>
+      <form action="{% url 'logout' %}" class="header__form">
+        {% csrf_token %}
+        <button type="submit" class="btn-primary btn-primary--orange">
+          Logout
+        </button>
+      </form>
+    </header>
+
+  <section class="income-box">
+    <form class="month-box" data-value="{{ budget_count }}">
+      <!-- <button type="submit" class="btn-secondary btn-prev-month">
+        <svg class="btn-secondary__icon btn-secondary__icon--grey">
+          <use
+            xlink:href="{% static 'img/symbol-defs.svg' %}#icon-arrow-with-circle-left"
+          ></use>
+        </svg>
+      </button> -->
+      
+        <h2 class="month-box__date">
+          {% if budget_month and budget_year %}
+            {{ budget_month }} {{ budget_year}}
+          {% endif %}
+        </h2>
+      
+      {% if budget_count > 1 %}
+        <button type="submit" class="btn-secondary btn-next-month">
+          <svg class="btn-secondary__icon btn-secondary__icon--grey">
+            <use
+              xlink:href="{% static 'img/symbol-defs.svg' %}#icon-arrow-with-circle-right"
+            ></use>
+          </svg>
+        </button>
+    {% endif %}
+    </form>
+      
+        <h2 class="income-box__heading--main">
+          Budget:
+          <span class="income-box__heading--sub">
+          {% if budget > 0 %}
+            {{ budget }}
+          {% else %}
+              0
+          {% endif %}
+          </span>
+        </h2>
+    
+    <div class="box-container">
+      <div class="box-left box-left__incomes">
+      
+        {% if income_category_title %}
+          <button class="btn-primary btn-primary--blue add-income">add income</button>
+        {% endif %}
+        <h2 class="heading-secondary heading-secondary--blue">incomes</h2>
+
+        <form class="items-box items-box__incomes" data-value="{{ income_count }}">
+          <!-- <button type="submit" class="btn-secondary btn-prev-income">
+            <svg class="btn-secondary__icon btn-secondary__icon--green">
+              <use
+                xlink:href="{% static 'img/symbol-defs.svg' %}#icon-arrow-with-circle-left"
+              ></use>
+            </svg>
+          </button> -->
+          
+          {% if income %}
+            <li class="items-box__item income-box__income">
+              <p class="income-box__income-type">{{ income_title }}</p>
+              <p class="income-box__income-amount">{{ income }} Rs</p>
+              <p class="income-box__income-date">{{ income_date }}</p>
+
+              <div class="action-box">
+                <button type="submit" class="btn-secondary">
+                  <svg class="btn-secondary__icon btn-secondary__icon--white">
+                    <use
+                      xlink:href="{% static 'img/symbol-defs.svg' %}#icon-cancel-circle"
+                    ></use>
+                  </svg>
+                </button>
+                <button class="btn-secondary">
+                  <svg class="btn-secondary__icon btn-secondary__icon--white">
+                    <use
+                      xlink:href="{% static 'img/symbol-defs.svg' %}#icon-pen"
+                    ></use>
+                  </svg>
+                </button>
+              </div>
+            </li>
+        {% endif %}
+          
+          {% if income_count > 1 %}
+            <button type="submit" class="btn-secondary btn-next-income">
+              <svg class="btn-secondary__icon btn-secondary__icon--green">
+                <use
+                  xlink:href="{% static 'img/symbol-defs.svg' %}#icon-arrow-with-circle-right"
+                ></use>
+              </svg>
+            </button>
+        {% endif %}
+        
+        </form>
+      </div>
+
+      <div class="box-right box-right__income-categories">
+        <button class="btn-primary btn-primary--orange add-income-category">add income category</button>
+        <h2 class="heading-secondary heading-secondary--orange">categories</h2>
+
+        <form class="category category__incomes" data-value="{{ income_category_count }}">
+          <!-- <button type="submit" class="btn-secondary btn-prev-income-category">
+            <svg class="btn-secondary__icon btn-secondary__icon--orange">
+              <use
+                xlink:href="{% static 'img/symbol-defs.svg' %}#icon-arrow-with-circle-left"
+              ></use>
+            </svg>
+          </button> -->
+          
+          {% if income_category_title %}
+            <li class="category__item category__item--grey category__item--income">
+              <p class="category__title category__title--income">{{ income_category_title }}</p>
+              <p class="category__date category__date--income">{{ income_category_date }}</p>
+
+              <div class="action-box">
+                <button class="btn-secondary">
+                  <svg class="btn-secondary__icon btn-secondary__icon--orange">
+                    <use
+                      xlink:href="{% static 'img/symbol-defs.svg' %}#icon-cancel-circle"
+                    ></use>
+                  </svg>
+                </button>
+                <button class="btn-secondary">
+                  <svg class="btn-secondary__icon btn-secondary__icon--orange">
+                    <use
+                      xlink:href="{% static 'img/symbol-defs.svg' %}#icon-pen"
+                    ></use>
+                  </svg>
+                </button>
+              </div>
+            </li>
+          {% endif %}
+          
+          {% if income_category_count > 1 %}
+            <button type="submit" class="btn-secondary btn-next-income-category">
+              <svg class="btn-secondary__icon btn-secondary__icon--orange">
+                <use
+                  xlink:href="{% static 'img/symbol-defs.svg' %}#icon-arrow-with-circle-right"
+                ></use>
+              </svg>
+            </button>
+        {% endif %}
+        
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <section class="expense-box">
+    <div class="box-container">
+      <div class="box-left box-left__expenses">
+        
+        {% if expense_category_title %}
+            <button class="btn-primary btn-primary--red add-expense">add expense</button>
+        {% endif %}
+        
+        <h2 class="heading-secondary heading-secondary--red">expenses</h2>
+
+        <form class="items-box items-box__expenses" data-value="{{ expense_count }}">
+          <!-- <button type="submit" class="btn-secondary btn-prev-expense">
+            <svg class="btn-secondary__icon btn-secondary__icon--pink">
+              <use
+                xlink:href="{% static 'img/symbol-defs.svg' %}#icon-arrow-with-circle-left"
+              ></use>
+            </svg>
+          </button> -->
+          
+          {% if expense %}
+            <li class="items-box__item expense-box__expense">
+              <p class="expense-box__expense-type">{{ expense_title }}</p>
+              <p class="expense-box__expense-amount">{{ expense }} Rs</p>
+              <p class="expense-box__expense-date">{{ expense_date }}</p>
+
+              <div class="action-box">
+                <button class="btn-secondary">
+                  <svg class="btn-secondary__icon btn-secondary__icon--white">
+                    <use
+                      xlink:href="{% static 'img/symbol-defs.svg' %}#icon-cancel-circle"
+                    ></use>
+                  </svg>
+                </button>
+                <button class="btn-secondary">
+                  <svg class="btn-secondary__icon btn-secondary__icon--white">
+                    <use
+                      xlink:href="{% static 'img/symbol-defs.svg' %}#icon-pen"
+                    ></use>
+                  </svg>
+                </button>
+              </div>
+            </li>
+          {% endif %}
+          
+          {% if expense_count > 1 %}
+            <button type="submit" class="btn-secondary btn-next-expense">
+              <svg class="btn-secondary__icon btn-secondary__icon--pink">
+                <use
+                  xlink:href="{% static 'img/symbol-defs.svg' %}#icon-arrow-with-circle-right"
+                ></use>
+              </svg>
+            </button>
+        {% endif %}
+        </form>
+      </div>
+
+      <div class="box-right box-right__expense-categories">
+
+        {% if income %}
+          <button class="btn-primary btn-primary--orange add-expense-category">add expense category</button>
+        {% endif %}
+        
+        <h2 class="heading-secondary heading-secondary--orange">categories</h2>
+
+        <form class="category category__expenses" data-value="{{ expense_category_count }}">
+          <!-- <button type="submit" class="btn-secondary btn-prev-expense-category">
+            <svg class="btn-secondary__icon btn-secondary__icon--orange">
+              <use
+                xlink:href="{% static 'img/symbol-defs.svg' %}#icon-arrow-with-circle-left"
+              ></use>
+            </svg>
+          </button> -->
+          
+          {% if expense_category_title %}
+            <li class="category__item category__item--white category__item--expense">
+              <p class="category__title category__title--expense">{{ expense_category_title }}</p>
+              <p class="category__date category__date--expense">{{ expense_category_date }}</p>
+
+              <div class="action-box">
+                <button class="btn-secondary">
+                  <svg class="btn-secondary__icon btn-secondary__icon--orange">
+                    <use
+                      xlink:href="{% static 'img/symbol-defs.svg' %}#icon-cancel-circle"
+                    ></use>
+                  </svg>
+                </button>
+                <button class="btn-secondary">
+                  <svg class="btn-secondary__icon btn-secondary__icon--orange">
+                    <use
+                      xlink:href="{% static 'img/symbol-defs.svg' %}#icon-pen"
+                    ></use>
+                  </svg>
+                </button>
+              </div>
+            </li>
+          {% endif %}
+          
+          {% if expense_category_count > 1 %}
+            <button type="submit" class="btn-secondary btn-next-expense-category">
+              <svg class="btn-secondary__icon btn-secondary__icon--orange">
+                <use
+                  xlink:href="{% static 'img/symbol-defs.svg' %}#icon-arrow-with-circle-right"
+                ></use>
+              </svg>
+            </button>
+          {% endif %}
+          
+        </form>
+      </div>
+    </div>
+  </section>
+
+    <footer class="footer">
+      <p class="footer__copyright">
+        © Copyright
+        <a href="https://github.com/muhammadsamii" class="footer__link"
+          >Muhammad Sami</a
+          >
+      </p>
+    </footer>
+  </main>
+{% endblock %}

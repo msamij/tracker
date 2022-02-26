@@ -1,0 +1,15 @@
+{
+  "name": "ts",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build:index": "esbuild controllers/authController.ts --bundle  --minify --outfile=build/index.js",
+    "build:app": "esbuild app.ts --bundle --minify --outfile=build/app.js"
+  },
+  "author": "Muhammad Sami",
+  "license": "ISC",
+  "devDependencies": {
+    "esbuild": "^0.14.14"
+  }
+}

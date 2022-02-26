@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "lib": ["es2015", "dom"],
+    "baseUrl": ".",
+    "target": "es2015",
+    "paths": {
+      "@controllers/*": ["./controllers/*"],
+      "@models/*": ["./models/*"],
+      "@budgetViews/*": ["./views/budgetViews/*"],
+      "@components/*": ["./views/budgetViews/components/*"],
+      "@events/*": ["./views/budgetViews/events/*"],
+      "@utils/*": ["./utils/*"],
+      "@views/*": ["./views/*"]
+    }
+  }
+}
