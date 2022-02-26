@@ -1,5 +1,5 @@
 env/
 .vim/
 .prettierignore
-readme.md
+README.md
 db.sqlite3
