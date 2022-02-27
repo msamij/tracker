@@ -3,4 +3,4 @@ env/
 node_modules/
 build/
 .prettierignore
-db.sqlite
+db.sqlite3
