@@ -3,4 +3,5 @@ env/
 node_modules/
 build/
 .prettierignore
-db.sqlite3
+.sqlite3
+__pycache__
