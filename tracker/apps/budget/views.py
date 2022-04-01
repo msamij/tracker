@@ -84,3 +84,7 @@ def save_income_and_expense(request, inc_or_exp):
                                    category=data['category']).save()
     save_budget(Budget, inc_or_exp, data, user)
     return HttpResponse('success', status=200)
+
+
+def delete_category(request, category):
+    pass

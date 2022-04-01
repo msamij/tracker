@@ -1,7 +1,11 @@
+# Settings 
 env/
 .vim/
+.prettierignore
+
+# Build files
 node_modules/
 build/
-.prettierignore
-*.sqlite3
-*__pycache__
+
+# Byte compiled
+__pycache__/
