@@ -11,7 +11,7 @@ from .models import (Budget, Income_Category,
 from .utils.validators import (valid_budget,
                                valid_category,
                                valid_income_and_expense)
-from .utils.data import (get_budget_menu_data, save_budget,)
+from .utils.data import (get_budget_menu_data, save_budget, update_budget)
 
 
 @login_required(login_url='signup')
@@ -86,5 +86,20 @@ def save_income_and_expense(request, inc_or_exp):
     return HttpResponse('success', status=200)
 
 
-def delete_category(request, category):
-    pass
+def delete_category(request, inc_or_exp):
+    user_id = User.objects.get(username=request.user.username).id
+    month = request.GET.get('month')
+    year = request.GET.get('year')
+
+    if inc_or_exp == 'income':
+        update_budget(Budget, Income.objects.filter(date__month=month, date__year=year, category=Income_Category.objects.filter(
+            user=user_id, date__month=month, date__year=year)[:1][0].id), 'subtract', user_id, month, year)
+        Income_Category.objects.filter(
+            user=user_id, date__month=month, date__year=year).delete()
+    else:
+        update_budget(Budget, Expense.objects.filter(date__month=month, date__year=year, category=Expense_Category.objects.filter(
+            user=user_id, date__month=month, date__year=year)[:1][0].id), 'add', user_id, month, year)
+        Expense_Category.objects.filter(
+            user=user_id, date__month=month, date__year=year).delete()
+
+    return HttpResponse('success', status=200)

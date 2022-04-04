@@ -1,53 +1,12 @@
-import { csrfToken } from '@utils/token';
-
-export function validDate(date: string, categoryDate: string): boolean {
+export function validDate(date: string, validationDate: string): boolean {
   const month = constructDate('month', date);
   const year = constructDate('year', date);
 
-  const categoryMonth = constructDate('month', categoryDate);
-  const categoryYear = constructDate('year', categoryDate);
+  const categoryMonth = constructDate('month', validationDate);
+  const categoryYear = constructDate('year', validationDate);
 
   if (month !== categoryMonth || year !== categoryYear) return false;
   return true;
-}
-
-/**
- *
- * @param requestBody object.
- * @param url string.
- * @returns response as promise string.
- *
- **/
-export async function processPostRequest(requestBody: {}, url: string): Promise<string> {
-  try {
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRFToken': csrfToken('csrftoken'),
-      },
-      body: JSON.stringify(requestBody),
-    });
-
-    const responseText = response.text().then(function (res) {
-      return res;
-    });
-    return responseText;
-  } catch (error) {
-    throw new Error(error);
-  }
-}
-
-export async function processGetRequest(url: string): Promise<string> {
-  try {
-    const response = await fetch(url);
-    const responseText = response.text().then(function (res) {
-      return res;
-    });
-    return responseText;
-  } catch (error) {
-    throw new Error(error);
-  }
 }
 
 /**
@@ -67,20 +26,7 @@ export function constructDate(dateType: 'month' | 'year' | 'day', dateValue: str
 }
 
 export function formatDate(fullDate: string): string {
-  const months: string[] = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'June',
-    'July',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec',
-  ];
+  const months: string[] = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
   let month = new Date(fullDate).getMonth() + 1;
   let date = ('0' + new Date(fullDate).getDate()).slice(-2);

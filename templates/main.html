@@ -95,10 +95,10 @@
         <h2 class="income-box__heading--main">
           Budget:
           <span class="income-box__heading--sub">
-          {% if budget > 0 %}
-            {{ budget }}
-          {% else %}
+          {% if not budget %}
               0
+          {% else %}
+            {{ budget }}
           {% endif %}
           </span>
         </h2>
@@ -154,7 +154,6 @@
               </svg>
             </button>
         {% endif %}
-        
         </form>
       </div>
 
@@ -269,7 +268,7 @@
       <div class="box-right box-right__expense-categories">
 
         {% if income %}
-          <button class="btn-primary btn-primary--orange add-expense-category">add expense category</button>
+        <button class="btn-primary btn-primary--orange add-expense-category">add expense category</button>
         {% endif %}
         
         <h2 class="heading-secondary heading-secondary--orange">categories</h2>

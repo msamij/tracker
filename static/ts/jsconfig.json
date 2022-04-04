@@ -6,6 +6,7 @@
     "paths": {
       "@controllers/*": ["./controllers/*"],
       "@models/*": ["./models/*"],
+      "@AJAX/*": ["./AJAX/*"],
       "@budgetViews/*": ["./views/budgetViews/*"],
       "@components/*": ["./views/budgetViews/components/*"],
       "@events/*": ["./views/budgetViews/events/*"],

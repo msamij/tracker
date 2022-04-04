@@ -25,6 +25,7 @@ def valid_income_and_expense(inc_or_exp, data):
 def valid_budget(budget, user_id, month, year):
     budget_found = budget.objects.filter(
         date__month=month, date__year=year, user=user_id)
+    print(budget_found)
     if budget_found:
         return
     else:

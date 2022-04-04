@@ -1,5 +1,6 @@
 import { BUDGET_MENU_URL } from '@utils/config';
-import { processPostRequest, processGetRequest, constructDate } from '@utils/helpers';
+import { constructDate } from '@utils/helpers';
+import { processGetRequest, processPostRequest } from '@AJAX/Ajax';
 
 export interface Model {
   budget?: number;
@@ -20,11 +21,7 @@ export interface Model {
   expenseCount?: number;
 }
 
-export async function saveCategory(
-  buttonType: string,
-  inputDate: string,
-  inputTitle: string
-): Promise<string> {
+export async function saveCategory(buttonType: string, inputDate: string, inputTitle: string): Promise<string> {
   return await processPostRequest(
     {
       category: inputTitle,
@@ -55,6 +52,8 @@ export async function saveIncomeAndExpense(
     `${BUDGET_MENU_URL}${buttonType}/`
   );
 }
+
+export async function deleteCategory(): Promise<void> {}
 
 export async function getJsonData(url: string): Promise<Model> {
   const result = await processGetRequest(`${url}`);

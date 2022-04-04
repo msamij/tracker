@@ -15,12 +15,13 @@ import {
   IncomeAndExpensePaginationButton,
   BudgetPaginationButton,
 } from '@budgetViews/components/paginationButtons';
+import budgetView from '@budgetViews/budgetView';
 
-abstract class RenderController {
+abstract class RenderValidator {
   protected abstract renderComponent(): void;
   protected componentId: 'income' | 'expense';
 
-  protected renderController(response: string): void {
+  protected validateAndRenderComponent(response: string): void {
     if (response !== 'success') renderMessage(viewElements.getMessageElement(), response);
     else {
       if (viewState.state.buttonType === 'add-income' || viewState.state.buttonType === 'add-income-category')
@@ -32,12 +33,12 @@ abstract class RenderController {
   }
 }
 
-class RenderCategory extends RenderController {
+class RenderCategory extends RenderValidator {
   private component: CategoryComponent;
 
   async init(): Promise<void> {
     if (viewState.state.buttonType === 'add-expense-category') {
-      if (!validDate(viewState.state.inputDate, viewState.state.categoryDate)) {
+      if (!validDate(viewState.state.inputDate, formatDate(budgetView.getDate()))) {
         renderMessage(
           viewElements.getMessageElement(),
           `Date field must contain month ${constructDate(
@@ -49,7 +50,7 @@ class RenderCategory extends RenderController {
       }
     }
 
-    this.renderController(
+    this.validateAndRenderComponent(
       await saveCategory(viewState.state.buttonType, viewState.state.inputDate, viewState.state.inputTitle)
     );
   }
@@ -64,6 +65,7 @@ class RenderCategory extends RenderController {
     });
     this.component.renderComponent('beforeend');
 
+    // Category date is different from current budget date.
     if (viewState.state.categoryDate) {
       if (
         constructDate('month', viewState.state.inputDate) !== constructDate('month', viewState.state.categoryDate) ||
@@ -107,7 +109,7 @@ class RenderCategory extends RenderController {
   }
 }
 
-class RenderIncomeAndExpense extends RenderController {
+class RenderIncomeAndExpense extends RenderValidator {
   private component: IncomeAndExpenseComponent;
 
   async init(): Promise<void> {
@@ -122,7 +124,7 @@ class RenderIncomeAndExpense extends RenderController {
       return;
     }
 
-    this.renderController(
+    this.validateAndRenderComponent(
       await saveIncomeAndExpense(
         viewState.state.buttonType,
         viewState.state.inputDate,

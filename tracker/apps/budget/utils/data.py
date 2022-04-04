@@ -10,21 +10,35 @@ def save_budget(Budget, inc_or_exp, data, user):
     decrement budget. If budget not found for the specified month, then create a new budget for that month.
     """
     budget = Budget.objects.filter(
-        date__month=data['month'], date__year=data['year'], user=user.id)
+        date__month=data['month'], date__year=data['year'], user=user.id)[0]
     if budget:
         if inc_or_exp == 'income':
-            budget[0].budget += int(data['amount'])
+            budget.budget += int(data['amount'])
         else:
-            budget[0].budget -= int(data['amount'])
-        budget[0].save()
+            budget.budget -= int(data['amount'])
+        budget.save()
     else:
         Budget(budget=data['amount'],
                date=data['date'], user=user).save()
 
 
+def update_budget(Budget, budget_items, add_or_subtract, user_id, month, year):
+    budget = Budget.objects.filter(
+        date__month=month, date__year=year, user=user_id)[0]
+
+    if len(budget_items) > 0:
+        if add_or_subtract == 'add':
+            for item in budget_items:
+                budget.budget += item.amount
+                budget.save()
+        else:
+            for item in budget_items:
+                budget.budget -= item.amount
+                budget.save()
+
+
 # These functions will fetch relevant information from database.
 def get_budget_menu_data(user_id, context, Budget, Income_Category, Expense_Category, Income, Expense):
-
     budget = Budget.objects.filter(user=user_id)[:1]
     if len(budget) > 0:
         context = generate_budget_context(
