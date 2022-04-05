@@ -1,20 +1,16 @@
-interface ComponentProps {
-  parent?: HTMLElement;
-}
-
 export abstract class ViewComponent {
-  protected abstract parent: HTMLElement;
-  protected abstract componentExists(): boolean;
-  abstract getComponentMarkup(...args: any): string;
+  protected abstract componentParent?: HTMLElement;
+  protected abstract componentExists?(): boolean;
+  // abstract getComponentMarkup(...args: any): string;
 
   /**
    * Renders HTML into the DOM.
    * @param position position of the component,
    * must be either "afterbegin" | "afterend" | "beforebegin" | "beforeend".
    */
-  renderComponent(position: 'afterbegin' | 'afterend' | 'beforebegin' | 'beforeend'): void {
+  renderComponent(position: 'afterbegin' | 'afterend' | 'beforebegin' | 'beforeend', componentMarkup: string): void {
     if (this.componentExists()) return;
-    this.parent.insertAdjacentHTML(position, this.getComponentMarkup());
+    this.componentParent.insertAdjacentHTML(position, componentMarkup);
   }
 
   /**

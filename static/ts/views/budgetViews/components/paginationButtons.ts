@@ -2,7 +2,7 @@ import { ViewComponent } from '@budgetViews/components/viewComponent';
 
 interface PageButton {
   pageType: 'next' | 'prev';
-  buttonType: string;
+  buttonType: 'add-income-category' | 'add-expense-category';
   parent?: HTMLElement;
   count?: number;
 }
@@ -14,27 +14,24 @@ interface BudgetPageButton {
 }
 
 export class CategoryPaginationButton extends ViewComponent {
-  constructor(protected parent: PageButton) {
+  constructor(protected componentParent?: HTMLElement, protected componentCount?: number) {
     super();
   }
 
-  // (Render pagination button only when count === 1).
   protected componentExists(): boolean {
-    return this.parent.count === 1 ? false : true;
+    return this.componentCount === 1 ? false : true;
   }
 
-  getComponentMarkup(): string {
+  getComponentMarkup(page: 'next' | 'prev', buttonType: 'add-income-category' | 'add-expense-category'): string {
     return `
      <button type="submit" class="btn-secondary ${
-       this.parent.buttonType === 'add-income-category'
-         ? `btn-${this.parent.pageType}-income-category`
-         : `btn-${this.parent.pageType}-expense-category`
+       buttonType === 'add-income-category' ? `btn-${page}-income-category` : `btn-${page}-expense-category`
      }">
         <svg class="btn-secondary__icon btn-secondary__icon--orange">
             <use xlink:href="../static/img/symbol-defs.svg#icon-arrow-with-circle-${
-              this.parent.pageType === 'next' ? 'right' : 'left'
-            }"
-          ></use>
+              page === 'next' ? 'right' : 'left'
+            }">
+          </use>
         </svg>
     </button>
     `;
@@ -42,26 +39,20 @@ export class CategoryPaginationButton extends ViewComponent {
 }
 
 export class IncomeAndExpensePaginationButton extends ViewComponent {
-  constructor(protected parent: PageButton) {
+  constructor(protected componentParent?: HTMLElement, protected componentCount?: number) {
     super();
   }
 
   // (Render pagination button only when count === 1).
   protected componentExists(): boolean {
-    return this.parent.count === 1 ? false : true;
+    return this.componentCount === 1 ? false : true;
   }
 
-  getComponentMarkup(): string {
+  getComponentMarkup(page: 'next' | 'prev', buttonType: 'add-income' | 'add-expense'): string {
     return `
-      <button type="submit" class="btn-secondary btn-${this.parent.pageType}-${
-      this.parent.buttonType === 'add-income' ? 'income' : 'expense'
-    }">
-        <svg class="btn-secondary__icon btn-secondary__icon--${
-          this.parent.buttonType === 'add-income' ? 'green' : 'pink'
-        }">
-          <use xlink:href="../static/img/symbol-defs.svg#icon-arrow-with-circle-${
-            this.parent.pageType === 'next' ? 'right' : 'left'
-          }">
+      <button type="submit" class="btn-secondary btn-${page}-${buttonType === 'add-income' ? 'income' : 'expense'}">
+        <svg class="btn-secondary__icon btn-secondary__icon--${buttonType === 'add-income' ? 'green' : 'pink'}">
+          <use xlink:href="../static/img/symbol-defs.svg#icon-arrow-with-circle-${page === 'next' ? 'right' : 'left'}">
           </use>
         </svg>
       </button>`;
@@ -69,21 +60,20 @@ export class IncomeAndExpensePaginationButton extends ViewComponent {
 }
 
 export class BudgetPaginationButton extends ViewComponent {
-  constructor(protected parent: BudgetPageButton) {
+  constructor(protected componentParent: BudgetPageButton) {
     super();
   }
 
-  // (Render pagination button only when count === 1).
   protected componentExists(): boolean {
-    return this.parent.count === 1 ? false : true;
+    return this.componentParent.count === 1 ? false : true;
   }
 
   getComponentMarkup(): string {
     return `
-      <button type="submit" class="btn-secondary btn-${this.parent.pageType}-month">
+      <button type="submit" class="btn-secondary btn-${this.componentParent.pageType}-month">
         <svg class="btn-secondary__icon btn-secondary__icon--grey">
           <use xlink:href="../static/img/symbol-defs.svg#icon-arrow-with-circle-${
-            this.parent.pageType === 'next' ? 'right' : 'left'
+            this.componentParent.pageType === 'next' ? 'right' : 'left'
           }">
           </use>
         </svg>

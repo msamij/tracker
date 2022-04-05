@@ -1,31 +1,15 @@
 import { ViewComponent } from '@budgetViews/components/viewComponent';
 
-interface IncomeAndExpense {
-  title: string;
-  amount: string;
-  date: string;
-  type: 'income' | 'expense';
-  count?: number;
-  parent?: HTMLElement;
-}
-
 export class IncomeAndExpenseComponent extends ViewComponent {
-  constructor(public parent: IncomeAndExpense) {
+  constructor(protected componentParent?: HTMLElement, protected componentCount?: number) {
     super();
   }
 
   protected componentExists(): boolean {
-    return this.parent.count === 0 ? false : true;
+    return this.componentCount === 0 ? false : true;
   }
 
-  getComponentMarkup(
-    title: string,
-    amount: string,
-    date: string,
-    componentType: 'income' | 'expense',
-    count?: number,
-    parent?: HTMLElement
-  ): string {
+  getComponentMarkup(componentType: 'income' | 'expense', title: string, amount: string, date: string): string {
     return `
     <li class="items-box__item ${componentType}-box__${componentType}">
       <p class="${componentType}-box__${componentType}-type">${title}</p>

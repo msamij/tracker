@@ -7,17 +7,17 @@ interface AddButton {
 }
 
 export class AddButtonComponent extends ViewComponent {
-  constructor(protected parent: AddButton) {
+  constructor(protected componentParent: AddButton) {
     super();
   }
 
   protected componentExists(): boolean {
-    return this.parent.count === 0 ? false : true;
+    return this.componentParent.count === 0 ? false : true;
   }
 
   getComponentMarkup(): string {
-    return `<button class="btn-primary btn-primary--${this.parent.buttonType === 'income' ? 'blue' : 'red'} add-${
-      this.parent.buttonType
-    }">add ${this.parent.buttonType}</button>`;
+    return `<button class="btn-primary btn-primary--${
+      this.componentParent.buttonType === 'income' ? 'blue' : 'red'
+    } add-${this.componentParent.buttonType}">add ${this.componentParent.buttonType}</button>`;
   }
 }

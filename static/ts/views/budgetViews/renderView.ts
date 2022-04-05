@@ -82,12 +82,10 @@ class RenderCategory extends RenderValidator {
       }
     }
 
-    new CategoryPaginationButton({
-      count: +categoryElements.getFormAttributeValue(`${this.componentId}s`),
-      parent: categoryElements.getFormElement(`${this.componentId}s`),
-      buttonType: viewState.state.buttonType,
-      pageType: 'next',
-    }).renderComponent('beforeend');
+    new CategoryPaginationButton(
+      categoryElements.getFormElement(`${this.componentId}s`),
+      +categoryElements.getFormAttributeValue(`${this.componentId}s`)
+    ).renderComponent('beforeend');
 
     new AddButtonComponent({
       count: +categoryElements.getFormAttributeValue(`${this.componentId}s`),
@@ -173,3 +171,10 @@ class RenderIncomeAndExpense extends RenderValidator {
 
 export const renderCategory = new RenderCategory();
 export const renderIncomeAndExpense = new RenderIncomeAndExpense();
+
+// new CategoryPaginationButton({
+//   componentParent: categoryElements.getFormElement(`${this.componentId}s`),
+//   componentCount: +categoryElements.getFormAttributeValue(`${this.componentId}s`),
+//   buttonType: viewState.state.buttonType as 'add-income-category' | 'add-expense-category',
+//   pageType: 'next',
+// }).renderComponent('beforeend');
