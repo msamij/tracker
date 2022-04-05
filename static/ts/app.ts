@@ -2,14 +2,14 @@ import budgetView from '@budgetViews/budgetView';
 import categoryElements from '@budgetViews/categoryView';
 import viewElements, { ViewState } from '@budgetViews/state';
 import budgetPaginationView from '@budgetViews/pagination/budget';
-import { incomePaginationView, expensePaginationView } from '@budgetViews/pagination/incomeAndExpense';
+import incomeAndExpenseElements from '@budgetViews/incomeAndExpenseView';
 import { popupMenuElements, popupMenuDOM } from '@budgetViews/popupView';
 import { renderCategory, renderIncomeAndExpense } from '@budgetViews/renderView';
-import incomeAndExpenseElements from '@budgetViews/incomeAndExpenseView';
+import { incomePaginationView, expensePaginationView } from '@budgetViews/pagination/incomeAndExpense';
 import { incomeCategoryPaginationView, expenseCategoryPaginationView } from '@budgetViews/pagination/category';
 import {
   HandleAddNewEvent,
-  HandleOverlayEvent,
+  setupOverlayEventListener,
   HandlePopupMenuEvent,
   handleBudgetPaginationEvent,
   handleIncomePaginationEvent,
@@ -21,15 +21,12 @@ import {
 // ADMIN PASSWORD: c056BH89Pm
 // TODO:
 // 1: Implement Pagination on budget, categories, incomes and expenses (DONE NEEDS TESTING).
-// 2: Implement Modification in incomeCategory, expenseCategory, incomes and expenses.
+// 2: Implement Delete action on incomeCategory, expenseCategory, incomes and expenses.
+// 3: Implement modify action on incomeCategory, expenseCategory and incomes and expenses.
 
 export const viewState = new ViewState(popupMenuElements, categoryElements);
 
-HandleOverlayEvent({
-  overlay: viewElements.getOverlay(),
-  viewState: viewState,
-  togglePopupMenu: popupMenuDOM.togglePopupMenu,
-});
+setupOverlayEventListener();
 
 HandlePopupMenuEvent({
   overlay: viewElements.getOverlay(),
@@ -54,7 +51,7 @@ HandleAddNewEvent(
 
 handleBudgetPaginationEvent(
   budgetView.getBudgetContainer(),
-  budgetPaginationView.paginateBudget.bind(budgetPaginationView)
+  budgetPaginationView.updateDOMOnBudgetPagination.bind(budgetPaginationView)
 );
 
 handleIncomeCategoryPaginationEvent(

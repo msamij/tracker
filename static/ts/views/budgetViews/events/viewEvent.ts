@@ -1,8 +1,9 @@
 import { viewState } from 'app';
-import { ViewState } from '@budgetViews/state';
 import budgetView from '@budgetViews/budgetView';
 import categoryElements from '@budgetViews/categoryView';
+import viewElements, { ViewState } from '@budgetViews/state';
 import incomeAndElements from '@budgetViews/incomeAndExpenseView';
+import { popupMenuElements, popupMenuDOM } from '@budgetViews/popupView';
 
 interface AddNewActions {
   overlay: HTMLDivElement;
@@ -40,9 +41,9 @@ interface OverlayActions {
   ): void;
 }
 
-export function HandleOverlayEvent(actions: OverlayActions): void {
-  actions.overlay.addEventListener('click', () => {
-    actions.togglePopupMenu(actions.viewState.state.menuType, actions.overlay, 'hidden', '0');
+export function setupOverlayEventListener(): void {
+  viewElements.getOverlay().addEventListener('click', () => {
+    popupMenuDOM.togglePopupMenu(viewState.state.menuType, viewElements.getOverlay(), 'hidden', '0');
   });
 }
 

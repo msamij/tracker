@@ -19,7 +19,7 @@ import { ExpenseCategoryButton } from '@components/expenseCategoryButton';
 class BudgetPaginationView extends PaginationView {
   protected data: Model;
 
-  async paginateBudget(): Promise<void> {
+  async updateDOMOnBudgetPagination(): Promise<void> {
     this.data = await this.updatePaginationButtonOnUI(
       `${BUDGET_PAGE_URL}${viewState.state.currentBudgetPage}/`,
       viewState.state.currentBudgetPage,

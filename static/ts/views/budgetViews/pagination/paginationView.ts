@@ -61,6 +61,8 @@ export abstract class PaginationView extends PaginationButtonView {
   protected abstract data: Model;
 
   protected updateIncomeCategory(): void {
+    if (!categoryElements.getFormAttributeValue('incomes')) {
+    }
     categoryElements.setCategoryTitle('income', this.data.incomeCategoryTitle);
     categoryElements.setCategoryDate('income', formatDate(this.data.incomeCategoryDate));
     // Save previous state before updating.
@@ -100,7 +102,6 @@ export abstract class PaginationView extends PaginationButtonView {
 
       // If we doing pagination on just income category, and we don't have any incomes for current category,
       // Don't remove add expense category button.(Since we only want to update income category and incomes).
-      // console.log(args.prevCount);
       if (args.type === 'income' && args.removeButton) {
         args.addButtonParent.removeChild(document.querySelector('.add-expense-category'));
       }

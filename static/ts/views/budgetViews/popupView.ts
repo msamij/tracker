@@ -22,11 +22,7 @@ class PopupMenuElements {
    * @param type = 'item' to get inputDate from item__menu.
    */
   getInputDate(type: 'category' | 'item'): string {
-    return (
-      document.querySelector(
-        `.input__date${type === 'category' ? '--category' : ''}`
-      ) as HTMLInputElement
-    ).value;
+    return (document.querySelector(`.input__date${type === 'category' ? '--category' : ''}`) as HTMLInputElement).value;
   }
 }
 
