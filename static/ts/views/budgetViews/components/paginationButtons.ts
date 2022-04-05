@@ -1,18 +1,5 @@
 import { ViewComponent } from '@budgetViews/components/viewComponent';
 
-interface PageButton {
-  pageType: 'next' | 'prev';
-  buttonType: 'add-income-category' | 'add-expense-category';
-  parent?: HTMLElement;
-  count?: number;
-}
-
-interface BudgetPageButton {
-  pageType: 'next' | 'prev';
-  parent?: HTMLElement;
-  count?: number;
-}
-
 export class CategoryPaginationButton extends ViewComponent {
   constructor(protected componentParent?: HTMLElement, protected componentCount?: number) {
     super();
@@ -43,7 +30,6 @@ export class IncomeAndExpensePaginationButton extends ViewComponent {
     super();
   }
 
-  // (Render pagination button only when count === 1).
   protected componentExists(): boolean {
     return this.componentCount === 1 ? false : true;
   }
@@ -60,21 +46,19 @@ export class IncomeAndExpensePaginationButton extends ViewComponent {
 }
 
 export class BudgetPaginationButton extends ViewComponent {
-  constructor(protected componentParent: BudgetPageButton) {
+  constructor(protected componentParent?: HTMLElement, protected componentCount?: number) {
     super();
   }
 
   protected componentExists(): boolean {
-    return this.componentParent.count === 1 ? false : true;
+    return this.componentCount === 1 ? false : true;
   }
 
-  getComponentMarkup(): string {
+  getComponentMarkup(page: 'next' | 'prev'): string {
     return `
-      <button type="submit" class="btn-secondary btn-${this.componentParent.pageType}-month">
+      <button type="submit" class="btn-secondary btn-${page}-month">
         <svg class="btn-secondary__icon btn-secondary__icon--grey">
-          <use xlink:href="../static/img/symbol-defs.svg#icon-arrow-with-circle-${
-            this.componentParent.pageType === 'next' ? 'right' : 'left'
-          }">
+          <use xlink:href="../static/img/symbol-defs.svg#icon-arrow-with-circle-${page === 'next' ? 'right' : 'left'}">
           </use>
         </svg>
       </button>`;
