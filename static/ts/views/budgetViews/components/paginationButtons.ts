@@ -14,25 +14,25 @@ interface BudgetPageButton {
 }
 
 export class CategoryPaginationButton extends ViewComponent {
-  constructor(protected props: PageButton) {
+  constructor(protected parent: PageButton) {
     super();
   }
 
   // (Render pagination button only when count === 1).
   protected componentExists(): boolean {
-    return this.props.count === 1 ? false : true;
+    return this.parent.count === 1 ? false : true;
   }
 
   getComponentMarkup(): string {
     return `
      <button type="submit" class="btn-secondary ${
-       this.props.buttonType === 'add-income-category'
-         ? `btn-${this.props.pageType}-income-category`
-         : `btn-${this.props.pageType}-expense-category`
+       this.parent.buttonType === 'add-income-category'
+         ? `btn-${this.parent.pageType}-income-category`
+         : `btn-${this.parent.pageType}-expense-category`
      }">
         <svg class="btn-secondary__icon btn-secondary__icon--orange">
             <use xlink:href="../static/img/symbol-defs.svg#icon-arrow-with-circle-${
-              this.props.pageType === 'next' ? 'right' : 'left'
+              this.parent.pageType === 'next' ? 'right' : 'left'
             }"
           ></use>
         </svg>
@@ -42,25 +42,25 @@ export class CategoryPaginationButton extends ViewComponent {
 }
 
 export class IncomeAndExpensePaginationButton extends ViewComponent {
-  constructor(protected props: PageButton) {
+  constructor(protected parent: PageButton) {
     super();
   }
 
   // (Render pagination button only when count === 1).
   protected componentExists(): boolean {
-    return this.props.count === 1 ? false : true;
+    return this.parent.count === 1 ? false : true;
   }
 
   getComponentMarkup(): string {
     return `
-      <button type="submit" class="btn-secondary btn-${this.props.pageType}-${
-      this.props.buttonType === 'add-income' ? 'income' : 'expense'
+      <button type="submit" class="btn-secondary btn-${this.parent.pageType}-${
+      this.parent.buttonType === 'add-income' ? 'income' : 'expense'
     }">
         <svg class="btn-secondary__icon btn-secondary__icon--${
-          this.props.buttonType === 'add-income' ? 'green' : 'pink'
+          this.parent.buttonType === 'add-income' ? 'green' : 'pink'
         }">
           <use xlink:href="../static/img/symbol-defs.svg#icon-arrow-with-circle-${
-            this.props.pageType === 'next' ? 'right' : 'left'
+            this.parent.pageType === 'next' ? 'right' : 'left'
           }">
           </use>
         </svg>
@@ -69,21 +69,21 @@ export class IncomeAndExpensePaginationButton extends ViewComponent {
 }
 
 export class BudgetPaginationButton extends ViewComponent {
-  constructor(protected props: BudgetPageButton) {
+  constructor(protected parent: BudgetPageButton) {
     super();
   }
 
   // (Render pagination button only when count === 1).
   protected componentExists(): boolean {
-    return this.props.count === 1 ? false : true;
+    return this.parent.count === 1 ? false : true;
   }
 
   getComponentMarkup(): string {
     return `
-      <button type="submit" class="btn-secondary btn-${this.props.pageType}-month">
+      <button type="submit" class="btn-secondary btn-${this.parent.pageType}-month">
         <svg class="btn-secondary__icon btn-secondary__icon--grey">
           <use xlink:href="../static/img/symbol-defs.svg#icon-arrow-with-circle-${
-            this.props.pageType === 'next' ? 'right' : 'left'
+            this.parent.pageType === 'next' ? 'right' : 'left'
           }">
           </use>
         </svg>

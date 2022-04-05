@@ -10,20 +10,27 @@ interface IncomeAndExpense {
 }
 
 export class IncomeAndExpenseComponent extends ViewComponent {
-  constructor(public props: IncomeAndExpense) {
+  constructor(public parent: IncomeAndExpense) {
     super();
   }
 
   protected componentExists(): boolean {
-    return this.props.count === 0 ? false : true;
+    return this.parent.count === 0 ? false : true;
   }
 
-  getComponentMarkup(): string {
+  getComponentMarkup(
+    title: string,
+    amount: string,
+    date: string,
+    componentType: 'income' | 'expense',
+    count?: number,
+    parent?: HTMLElement
+  ): string {
     return `
-    <li class="items-box__item ${this.props.type}-box__${this.props.type}">
-      <p class="${this.props.type}-box__${this.props.type}-type">${this.props.title}</p>
-      <p class="${this.props.type}-box__${this.props.type}-amount">${this.props.amount} Rs</p>
-      <p class="${this.props.type}-box__${this.props.type}-date">${this.props.date}</p>
+    <li class="items-box__item ${componentType}-box__${componentType}">
+      <p class="${componentType}-box__${componentType}-type">${title}</p>
+      <p class="${componentType}-box__${componentType}-amount">${amount} Rs</p>
+      <p class="${componentType}-box__${componentType}-date">${date}</p>
           <div class="action-box">
           <button type="submit" class="btn-secondary">
             <svg class="btn-secondary__icon btn-secondary__icon--white">

@@ -1,89 +1,47 @@
 import { viewState } from 'app';
+import viewElements from '@budgetViews/state';
 import budgetView from '@budgetViews/budgetView';
 import categoryElements from '@budgetViews/categoryView';
-import viewElements, { ViewState } from '@budgetViews/state';
 import incomeAndElements from '@budgetViews/incomeAndExpenseView';
 import { popupMenuElements, popupMenuDOM } from '@budgetViews/popupView';
 
-interface AddNewActions {
-  overlay: HTMLDivElement;
-  viewState: ViewState;
-  getPopupMenu(menuType: 'category' | 'item'): HTMLFormElement;
-  clearInputFields(menuType: HTMLFormElement): void;
-  togglePopupMenu(
-    menuType: HTMLFormElement,
-    overlay: HTMLElement,
-    visibility: 'visible' | 'hidden',
-    opacity: '1' | '0'
-  ): void;
-}
-interface PopupMenuActions {
-  overlay: HTMLDivElement;
-  container: HTMLDivElement;
-  viewState: ViewState;
-  getPopupMenu(menuType: 'category' | 'item'): HTMLFormElement;
-  getPopupMenuClickedButton(event: Event): string;
-  togglePopupMenu(
-    menuType: HTMLFormElement,
-    overlay: HTMLElement,
-    visibility: 'visible' | 'hidden',
-    opacity: '1' | '0'
-  ): void;
-}
-interface OverlayActions {
-  overlay: HTMLDivElement;
-  viewState: ViewState;
-  togglePopupMenu(
-    menuType: HTMLFormElement,
-    overlay: HTMLElement,
-    visibility: 'visible' | 'hidden',
-    opacity: '1' | '0'
-  ): void;
-}
-
-export function setupOverlayEventListener(): void {
+export function handleOverlayEvent(): void {
   viewElements.getOverlay().addEventListener('click', () => {
     popupMenuDOM.togglePopupMenu(viewState.state.menuType, viewElements.getOverlay(), 'hidden', '0');
   });
 }
 
-export function HandlePopupMenuEvent(actions: PopupMenuActions): void {
-  actions.container.addEventListener('click', event => {
+export function HandlePopupMenuEvent(): void {
+  viewElements.getContainer().addEventListener('click', event => {
     if (
       (event.target as HTMLButtonElement).closest('.add-income-category') ||
       (event.target as HTMLButtonElement).closest('.add-expense-category')
     ) {
-      actions.viewState.buttonType = actions.getPopupMenuClickedButton(event);
-      actions.viewState.menuType = actions.getPopupMenu('category');
+      viewState.buttonType = popupMenuDOM.getPopupMenuClickedButton(event);
+      viewState.menuType = popupMenuElements.getPopupMenu('category');
 
-      actions.togglePopupMenu(actions.viewState.state.menuType, actions.overlay, 'visible', '1');
+      popupMenuDOM.togglePopupMenu(viewState.state.menuType, viewElements.getOverlay(), 'visible', '1');
     } else if (
       (event.target as HTMLButtonElement).closest('.add-income') ||
       (event.target as HTMLButtonElement).closest('.add-expense')
     ) {
-      actions.viewState.menuType = actions.getPopupMenu('item');
-      actions.viewState.buttonType = actions.getPopupMenuClickedButton(event);
+      viewState.menuType = popupMenuElements.getPopupMenu('item');
+      viewState.buttonType = popupMenuDOM.getPopupMenuClickedButton(event);
 
-      actions.togglePopupMenu(actions.viewState.state.menuType, actions.overlay, 'visible', '1');
+      popupMenuDOM.togglePopupMenu(viewState.state.menuType, viewElements.getOverlay(), 'visible', '1');
     }
   });
 }
 
-export function HandleAddNewEvent(
-  actions: AddNewActions,
-  submitCategoryForm: Function,
-  submitIncomeAndExpenseForm: Function
-): void {
-  [actions.getPopupMenu('category'), actions.getPopupMenu('item')].forEach(el => {
+export function HandleAddNewItemEvent(submitCategoryForm: Function, submitIncomeAndExpenseForm: Function): void {
+  [popupMenuElements.getPopupMenu('category'), popupMenuElements.getPopupMenu('item')].forEach(el => {
     el.addEventListener('submit', event => {
       event.preventDefault();
-      actions.viewState.updateStateOnAddNewElement();
-      actions.clearInputFields(actions.viewState.state.menuType);
-      actions.togglePopupMenu(actions.viewState.state.menuType, actions.overlay, 'hidden', '0');
-      if (
-        actions.viewState.state.buttonType === 'add-income-category' ||
-        actions.viewState.state.buttonType === 'add-expense-category'
-      )
+      viewState.updateStateOnAddNewElement();
+      popupMenuDOM.clearInputFields(viewState.state.menuType);
+      popupMenuDOM.togglePopupMenu(viewState.state.menuType, viewElements.getOverlay(), 'hidden', '0');
+
+      if (viewState.state.buttonType === 'add-income-category' || viewState.state.buttonType === 'add-expense-category')
         submitCategoryForm();
       else submitIncomeAndExpenseForm();
     });

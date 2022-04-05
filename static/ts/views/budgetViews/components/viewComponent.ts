@@ -3,9 +3,9 @@ interface ComponentProps {
 }
 
 export abstract class ViewComponent {
-  protected abstract props: ComponentProps;
+  protected abstract parent: HTMLElement;
   protected abstract componentExists(): boolean;
-  abstract getComponentMarkup(): string;
+  abstract getComponentMarkup(...args: any): string;
 
   /**
    * Renders HTML into the DOM.
@@ -14,7 +14,7 @@ export abstract class ViewComponent {
    */
   renderComponent(position: 'afterbegin' | 'afterend' | 'beforebegin' | 'beforeend'): void {
     if (this.componentExists()) return;
-    this.props.parent.insertAdjacentHTML(position, this.getComponentMarkup());
+    this.parent.insertAdjacentHTML(position, this.getComponentMarkup());
   }
 
   /**

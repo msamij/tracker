@@ -6,12 +6,12 @@ interface ExpCategoryButton {
 }
 
 export class ExpenseCategoryButton extends ViewComponent {
-  constructor(public props: ExpCategoryButton) {
+  constructor(public parent: ExpCategoryButton) {
     super();
   }
 
   protected componentExists(): boolean {
-    return this.props.count > 1 ? true : false;
+    return this.parent.count > 1 ? true : false;
   }
 
   getComponentMarkup(): string {
