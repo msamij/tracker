@@ -1,17 +1,12 @@
 import { ViewComponent } from '@budgetViews/components/viewComponent';
 
-interface ExpCategoryButton {
-  count?: number;
-  parent?: HTMLElement;
-}
-
 export class ExpenseCategoryButton extends ViewComponent {
-  constructor(public componentParent: ExpCategoryButton) {
+  constructor(public componentParent?: HTMLElement, protected componentCount?: number) {
     super();
   }
 
   protected componentExists(): boolean {
-    return this.componentParent.count > 1 ? true : false;
+    return this.componentCount > 1 ? true : false;
   }
 
   getComponentMarkup(): string {

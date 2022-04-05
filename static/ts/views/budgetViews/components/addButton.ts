@@ -1,23 +1,17 @@
 import { ViewComponent } from '@budgetViews/components/viewComponent';
 
-interface AddButton {
-  buttonType: 'income' | 'expense';
-  count?: number;
-  parent?: HTMLElement;
-}
-
 export class AddButtonComponent extends ViewComponent {
-  constructor(protected componentParent: AddButton) {
+  constructor(protected componentParent?: HTMLElement, protected componentCount?: number) {
     super();
   }
 
   protected componentExists(): boolean {
-    return this.componentParent.count === 0 ? false : true;
+    return this.componentCount === 0 ? false : true;
   }
 
-  getComponentMarkup(): string {
+  getComponentMarkup(buttonType: 'income' | 'expense'): string {
     return `<button class="btn-primary btn-primary--${
-      this.componentParent.buttonType === 'income' ? 'blue' : 'red'
-    } add-${this.componentParent.buttonType}">add ${this.componentParent.buttonType}</button>`;
+      buttonType === 'income' ? 'blue' : 'red'
+    } add-${buttonType}">add ${buttonType}</button>`;
   }
 }
