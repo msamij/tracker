@@ -1,7 +1,6 @@
 export abstract class ViewComponent {
   protected abstract componentParent?: HTMLElement;
   protected abstract componentExists?(): boolean;
-  // abstract getComponentMarkup(...args: any): string;
 
   /**
    * Renders HTML into the DOM.
