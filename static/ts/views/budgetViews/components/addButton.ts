@@ -1,6 +1,6 @@
 import { ViewComponent } from '@budgetViews/components/viewComponent';
 
-export class AddButtonComponent extends ViewComponent {
+export class AddButton extends ViewComponent {
   constructor(protected componentParent?: HTMLElement, protected componentCount?: number) {
     super();
   }

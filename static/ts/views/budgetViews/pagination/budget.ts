@@ -12,7 +12,7 @@ import {
   IncomeAndExpensePaginationButton,
 } from '@budgetViews/components/paginationButtons';
 import { CategoryComponent } from '@components/category';
-import { AddButtonComponent } from '@components/addButton';
+import { AddButton } from '@components/addButton';
 import { IncomeAndExpenseComponent } from '@components/incomeAndExpense';
 import { ExpenseCategoryButton } from '@components/expenseCategoryButton';
 
@@ -75,7 +75,7 @@ class BudgetPaginationView extends PaginationView {
         title: this.data.expenseCategoryTitle,
         date: formatDate(this.data.expenseCategoryDate),
       }).getComponentMarkup(),
-      addExpenseButtonMarkup: new AddButtonComponent({ buttonType: 'expense' }).getComponentMarkup(),
+      addExpenseButtonMarkup: new AddButton({ buttonType: 'expense' }).getComponentMarkup(),
       prevCount: +categoryElements.getFormAttributeValue('expenses'),
       nextCount: this.data.expenseCategoryCount,
     });

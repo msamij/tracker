@@ -14,18 +14,10 @@ from django.http import HttpResponse
 
 @login_required(login_url='signup')
 def index(request):
-    """
-    If user is logged in redirects to budget-menu, Otherwise redirects to signup page.
-    """
     return redirect(reverse('budget-menu'))
 
 
 def signup_user(request):
-    """
-    If user is logged in redirects to budget-menu page. else if request was to signup user, 
-    then validate credentials logged the user in and redirect to budget-menu page.
-    return errors if credentials are not valid.
-       """
     if not request.user.is_authenticated:
         if request.method != 'POST':
             form = UserForm()

@@ -4,7 +4,7 @@ import { renderMessage } from '@views/errorView';
 import budgetElements from '@budgetViews/budgetView';
 import { CategoryComponent } from '@components/category';
 import categoryElements from '@budgetViews/categoryView';
-import { AddButtonComponent } from '@components/addButton';
+import { AddButton } from '@components/addButton';
 import { saveCategory, saveIncomeAndExpense } from '@models/Model';
 import incomeAndExpenseElements from '@budgetViews/incomeAndExpenseView';
 import { ExpenseCategoryButton } from '@components/expenseCategoryButton';
@@ -34,7 +34,10 @@ abstract class RenderValidator {
 }
 
 class RenderCategory extends RenderValidator {
-  private component: CategoryComponent;
+  private categoryComponent: CategoryComponent;
+  private budgetPageButton: BudgetPaginationButton;
+  private categoryPageButton: CategoryPaginationButton;
+  private addButton: AddButton;
 
   async init(): Promise<void> {
     if (viewState.state.buttonType === 'add-expense-category') {
@@ -56,14 +59,18 @@ class RenderCategory extends RenderValidator {
   }
 
   protected renderComponent(): void {
-    this.component = new CategoryComponent({
-      count: +categoryElements.getFormAttributeValue(`${this.componentId}s`),
-      parent: categoryElements.getFormElement(`${this.componentId}s`),
-      title: viewState.state.inputTitle,
-      date: formatDate(viewState.state.inputDate),
-      type: this.componentId,
-    });
-    this.component.renderComponent('beforeend');
+    this.categoryComponent = new CategoryComponent(
+      categoryElements.getFormElement(`${this.componentId}s`),
+      +categoryElements.getFormAttributeValue(`${this.componentId}s`)
+    );
+    this.categoryComponent.renderComponent(
+      'beforeend',
+      this.categoryComponent.getComponentMarkup(
+        this.componentId,
+        viewState.state.inputTitle,
+        formatDate(viewState.state.inputDate)
+      )
+    );
 
     // Category date is different from current budget date.
     if (viewState.state.categoryDate) {
@@ -71,29 +78,35 @@ class RenderCategory extends RenderValidator {
         constructDate('month', viewState.state.inputDate) !== constructDate('month', viewState.state.categoryDate) ||
         constructDate('year', viewState.state.inputDate) !== constructDate('year', viewState.state.categoryDate)
       ) {
-        new BudgetPaginationButton({
-          count: +budgetElements.getBudgetCount(),
-          parent: budgetElements.getBudgetContainer(),
-          pageType: 'next',
-        }).renderComponent('beforeend');
-
+        this.budgetPageButton = new BudgetPaginationButton(
+          budgetElements.getBudgetContainer(),
+          +budgetElements.getBudgetCount()
+        );
+        this.budgetPageButton.renderComponent('beforeend', this.budgetPageButton.getComponentMarkup('next'));
         budgetElements.getBudgetContainer().dataset.value = (+budgetElements.getBudgetCount() + 1).toString();
         return;
       }
     }
 
-    new CategoryPaginationButton(
+    this.categoryPageButton = new CategoryPaginationButton(
       categoryElements.getFormElement(`${this.componentId}s`),
       +categoryElements.getFormAttributeValue(`${this.componentId}s`)
-    ).renderComponent('beforeend');
+    );
+    this.categoryPageButton.renderComponent(
+      'beforeend',
+      this.categoryPageButton.getComponentMarkup(
+        'next',
+        viewState.state.buttonType as 'add-income-category' | 'add-expense-category'
+      )
+    );
 
-    new AddButtonComponent({
-      count: +categoryElements.getFormAttributeValue(`${this.componentId}s`),
-      parent: incomeAndExpenseElements.getBoxLeft(`${this.componentId}s`),
-      buttonType: this.componentId,
-    }).renderComponent('afterbegin');
+    this.addButton = new AddButton(
+      incomeAndExpenseElements.getBoxLeft(`${this.componentId}s`),
+      +categoryElements.getFormAttributeValue(`${this.componentId}s`)
+    );
+    this.addButton.renderComponent('afterbegin', this.addButton.getComponentMarkup(this.componentId));
 
-    this.component.updateComponentState(
+    this.categoryComponent.updateComponentState(
       categoryElements.getFormElement(`${this.componentId}s`),
       +categoryElements.getFormAttributeValue(`${this.componentId}s`) + 1
     );
@@ -108,7 +121,8 @@ class RenderCategory extends RenderValidator {
 }
 
 class RenderIncomeAndExpense extends RenderValidator {
-  private component: IncomeAndExpenseComponent;
+  private incomeAndExpense: IncomeAndExpenseComponent;
+  private expenseCategoryButton: ExpenseCategoryButton;
 
   async init(): Promise<void> {
     if (!validDate(viewState.state.inputDate, viewState.state.categoryDate)) {
@@ -134,7 +148,7 @@ class RenderIncomeAndExpense extends RenderValidator {
   }
 
   protected renderComponent(): void {
-    this.component = new IncomeAndExpenseComponent({
+    this.incomeAndExpense = new IncomeAndExpenseComponent({
       count: +incomeAndExpenseElements.getFormAttributeValue(`${this.componentId}s`),
       parent: incomeAndExpenseElements.getFormElement(`${this.componentId}s`),
       title: viewState.state.inputTitle,
@@ -142,7 +156,7 @@ class RenderIncomeAndExpense extends RenderValidator {
       date: formatDate(viewState.state.inputDate),
       type: this.componentId,
     });
-    this.component.renderComponent('beforeend');
+    this.incomeAndExpense.renderComponent('beforeend');
 
     new IncomeAndExpensePaginationButton({
       count: +incomeAndExpenseElements.getFormAttributeValue(`${this.componentId}s`),
@@ -151,7 +165,7 @@ class RenderIncomeAndExpense extends RenderValidator {
       pageType: 'next',
     }).renderComponent('beforeend');
 
-    this.component.updateComponentState(
+    this.incomeAndExpense.updateComponentState(
       incomeAndExpenseElements.getFormElement(`${this.componentId}s`),
       +incomeAndExpenseElements.getFormAttributeValue(`${this.componentId}s`) + 1
     );

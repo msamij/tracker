@@ -1,6 +1,6 @@
-import { AuthView } from '@views/authViews/authView';
-import { processPostRequest } from '@utils/helpers';
+import { processPostRequest } from '@AJAX/Ajax';
 import { renderMessage } from '@views/errorView';
+import { AuthView } from '@views/authViews/authView';
 
 async function controlFormSubmit(): Promise<void> {
   // disble form buttons while form being submitted to server.
