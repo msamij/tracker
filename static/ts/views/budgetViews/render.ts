@@ -182,13 +182,13 @@ class RenderIncomeAndExpense extends RenderValidator {
     if (
       this.componentId === 'income' &&
       !(categoryElements.getExpenseCategoryContainer().children[0] instanceof HTMLButtonElement)
-    )
+    ) {
       this.expenseCategoryButton = new ExpenseCategoryButton(
         categoryElements.getExpenseCategoryContainer(),
         +incomeAndExpenseElements.getFormAttributeValue(`${this.componentId}s`)
       );
-    this.expenseCategoryButton.renderComponent('afterbegin', this.expenseCategoryButton.getComponentMarkup());
-
+      this.expenseCategoryButton.renderComponent('afterbegin', this.expenseCategoryButton.getComponentMarkup());
+    }
     budgetElements.updateBudget(viewState.state.inputAmount, `${this.componentId}`);
   }
 }

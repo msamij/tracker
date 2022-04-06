@@ -1,9 +1,9 @@
 import { viewState } from 'app';
 import viewElements from '@DOMElements/view';
-import budgetView from '@DOMElements/budgetView';
-import categoryElements from '@DOMElements/categoryView';
-import incomeAndElements from '@DOMElements/incomeAndExpenseView';
-import { popupMenuElements, popupMenuDOM } from '@DOMElements/popupView';
+import budgetView from '@DOMElements/budget';
+import categoryElements from '@DOMElements/category';
+import incomeAndElements from '@DOMElements/incomeAndExpense';
+import { popupMenuElements, popupMenuDOM } from '@DOMElements/popup';
 
 export function handleOverlayEvent(): void {
   viewElements.getOverlay().addEventListener('click', () => {
