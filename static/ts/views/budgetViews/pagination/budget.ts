@@ -2,10 +2,10 @@ import { viewState } from 'app';
 import { constructBudgetDate, formatDate } from '@utils/helpers';
 import { PaginationView } from '@budgetViews/pagination/paginationView';
 import { Model } from '@models/Model';
-import categoryElements from '@budgetViews/categoryView';
-import incomeAndExpenseElements from '@budgetViews/incomeAndExpenseView';
+import categoryElements from '@DOMElements/category';
+import incomeAndExpenseElements from '@DOMElements/incomeAndExpense';
 import { BUDGET_PAGE_URL } from '@utils/config';
-import budgetElements from '@budgetViews/budgetView';
+import budgetElements from '@DOMElements/budget';
 import {
   BudgetPaginationButton,
   CategoryPaginationButton,

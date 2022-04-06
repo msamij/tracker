@@ -1,8 +1,8 @@
 import { viewState } from 'app';
 import { formatDate } from '@utils/helpers';
 import { Model, getJsonData } from '@models/Model';
-import categoryElements from '@budgetViews/categoryView';
-import incomeAndExpenseElements from '@budgetViews/incomeAndExpenseView';
+import categoryElements from '@DOMElements/category';
+import incomeAndExpenseElements from '@DOMElements/incomeAndExpense';
 
 // This class is reponsible to update pagination buttons on UI.
 // Eg --> when user changes page it'll be responsible to render appropriate buttons.

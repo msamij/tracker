@@ -4,14 +4,15 @@
     "baseUrl": ".",
     "target": "es2015",
     "paths": {
-      "@controllers/*": ["./controllers/*"],
-      "@models/*": ["./models/*"],
       "@AJAX/*": ["./AJAX/*"],
-      "@budgetViews/*": ["./views/budgetViews/*"],
-      "@components/*": ["./views/budgetViews/components/*"],
-      "@events/*": ["./views/budgetViews/events/*"],
+      "@views/*": ["./views/*"],
       "@utils/*": ["./utils/*"],
-      "@views/*": ["./views/*"]
+      "@models/*": ["./models/*"],
+      "@controllers/*": ["./controllers/*"],
+      "@budgetViews/*": ["./views/budgetViews/*"],
+      "@events/*": ["./views/budgetViews/events/*"],
+      "@components/*": ["./views/budgetViews/components/*"],
+      "@DOMElements/*": ["./views/budgetViews/DOMElements/*"]
     }
   }
 }

@@ -3,8 +3,8 @@ import { Model } from '@models/Model';
 import { constructDate } from '@utils/helpers';
 import { INCOME_PAGE_URL, EXPENSE_PAGE_URL } from '@utils/config';
 import { PaginationView } from './paginationView';
-import categoryElements from '@budgetViews/categoryView';
-import incomeAndExpenseElements from '@budgetViews/incomeAndExpenseView';
+import categoryElements from '@DOMElements/category';
+import incomeAndExpenseElements from '@DOMElements/incomeAndExpense';
 import { IncomeAndExpensePaginationButton } from '@budgetViews/components/paginationButtons';
 
 class IncomePaginationView extends PaginationView {

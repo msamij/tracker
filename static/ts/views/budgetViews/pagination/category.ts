@@ -1,9 +1,9 @@
 import { viewState } from 'app';
 import { Model } from '@models/Model';
 import { PaginationView } from './paginationView';
-import categoryElements from '@budgetViews/categoryView';
+import categoryElements from '@DOMElements/category';
 import { constructDate, formatDate } from '@utils/helpers';
-import incomeAndExpenseElements from '@budgetViews/incomeAndExpenseView';
+import incomeAndExpenseElements from '@DOMElements/incomeAndExpense';
 import { INCOME_CATEGORY_PAGE_URL, EXPENSE_CATEGORY_PAGE_URL } from '@utils/config';
 import { IncomeAndExpenseComponent } from '@budgetViews/components/incomeAndExpense';
 import { ExpenseCategoryButton } from '@budgetViews/components/expenseCategoryButton';

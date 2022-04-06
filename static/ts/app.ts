@@ -1,10 +1,10 @@
 import { ViewState } from '@budgetViews/state';
-import budgetView from '@budgetViews/budgetView';
-import categoryElements from '@budgetViews/categoryView';
+import budgetElements from '@DOMElements/budget';
+import categoryElements from '@DOMElements/category';
 import budgetPaginationView from '@budgetViews/pagination/budget';
-import incomeAndExpenseElements from '@budgetViews/incomeAndExpenseView';
-import { popupMenuElements, popupMenuDOM } from '@budgetViews/popupView';
-import { renderCategory, renderIncomeAndExpense } from '@budgetViews/renderView';
+import incomeAndExpenseElements from '@DOMElements/incomeAndExpense';
+import { popupMenuElements } from '@DOMElements/popup';
+import { renderCategory, renderIncomeAndExpense } from '@budgetViews/render';
 import { incomePaginationView, expensePaginationView } from '@budgetViews/pagination/incomeAndExpense';
 import { incomeCategoryPaginationView, expenseCategoryPaginationView } from '@budgetViews/pagination/category';
 import {
@@ -16,7 +16,7 @@ import {
   handleExpensePaginationEvent,
   handleIncomeCategoryPaginationEvent,
   handleExpenseCategoryPaginationEvent,
-} from '@events/viewEvent';
+} from '@events/event';
 
 // ADMIN PASSWORD: c056BH89Pm
 // TODO:
@@ -36,7 +36,7 @@ HandleAddNewItemEvent(
 );
 
 handleBudgetPaginationEvent(
-  budgetView.getBudgetContainer(),
+  budgetElements.getBudgetContainer(),
   budgetPaginationView.updateDOMOnBudgetPagination.bind(budgetPaginationView)
 );
 
