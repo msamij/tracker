@@ -1,6 +1,6 @@
 import { viewState } from 'app';
 import { Model } from '@models/Model';
-import { PaginationView } from './paginationView';
+import { PaginationDomUpdate } from './paginationView';
 import categoryElements from '@DOMElements/category';
 import { constructDate, formatDate } from '@utils/helpers';
 import incomeAndExpenseElements from '@DOMElements/incomeAndExpense';
@@ -9,7 +9,7 @@ import { IncomeAndExpenseComponent } from '@budgetViews/components/incomeAndExpe
 import { ExpenseCategoryButton } from '@budgetViews/components/expenseCategoryButton';
 import { CategoryPaginationButton, IncomeAndExpensePaginationButton } from '@budgetViews/components/paginationButtons';
 
-class IncomeCategoryPaginationView extends PaginationView {
+class IncomeCategoryPaginationView extends PaginationDomUpdate {
   protected data: Model;
 
   async paginateIncomeCategory(): Promise<void> {
@@ -18,7 +18,7 @@ class IncomeCategoryPaginationView extends PaginationView {
       categoryElements.getCategoryDate('income')
     )}&year=${+constructDate('year', categoryElements.getCategoryDate('income'))}`;
 
-    this.data = await this.updatePaginationButtonOnUI(
+    this.data = await this.updateButtonsOnPageChange(
       url,
       viewState.state.currentIncomeCategoryPage,
       +categoryElements.getFormAttributeValue('incomes'),
@@ -59,7 +59,7 @@ class IncomeCategoryPaginationView extends PaginationView {
   }
 }
 
-class ExpenseCategoryPaginationView extends PaginationView {
+class ExpenseCategoryPaginationView extends PaginationDomUpdate {
   protected data: Model;
 
   async paginateExpenseCategory(): Promise<void> {
@@ -68,7 +68,7 @@ class ExpenseCategoryPaginationView extends PaginationView {
       categoryElements.getCategoryDate('expense')
     )}&year=${+constructDate('year', categoryElements.getCategoryDate('expense'))}`;
 
-    this.data = await this.updatePaginationButtonOnUI(
+    this.data = await this.updateButtonsOnPageChange(
       url,
       viewState.state.currentExpenseCategoryPage,
       +categoryElements.getFormAttributeValue('expenses'),

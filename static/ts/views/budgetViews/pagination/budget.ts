@@ -1,6 +1,6 @@
 import { viewState } from 'app';
 import { constructBudgetDate, formatDate } from '@utils/helpers';
-import { PaginationView } from '@budgetViews/pagination/paginationView';
+import { PaginationDomUpdate } from '@budgetViews/pagination/paginationView';
 import { Model } from '@models/Model';
 import categoryElements from '@DOMElements/category';
 import incomeAndExpenseElements from '@DOMElements/incomeAndExpense';
@@ -16,11 +16,11 @@ import { AddButton } from '@components/addButton';
 import { IncomeAndExpenseComponent } from '@components/incomeAndExpense';
 import { ExpenseCategoryButton } from '@components/expenseCategoryButton';
 
-class BudgetPaginationView extends PaginationView {
+class BudgetPaginationView extends PaginationDomUpdate {
   protected data: Model;
 
   async updateDOMOnBudgetPagination(): Promise<void> {
-    this.data = await this.updatePaginationButtonOnUI(
+    this.data = await this.updateButtonsOnPageChange(
       `${BUDGET_PAGE_URL}${viewState.state.currentBudgetPage}/`,
       viewState.state.currentBudgetPage,
       +budgetElements.getBudgetCount(),
@@ -33,7 +33,7 @@ class BudgetPaginationView extends PaginationView {
     budgetElements.setBudget = this.data.budget;
 
     // Update Income Category.
-    this.updateIncomeCategory();
+    BudgetPaginationView.updateIncomeCategory();
     this.updateButtons(
       viewState.state.prevCount,
       this.data.incomeCategoryCount,

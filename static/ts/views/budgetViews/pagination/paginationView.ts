@@ -6,9 +6,9 @@ import incomeAndExpenseElements from '@DOMElements/incomeAndExpense';
 
 // This class is reponsible to update pagination buttons on UI.
 // Eg --> when user changes page it'll be responsible to render appropriate buttons.
-// Eg --> if we are on last page only render back button.
+// Eg --> if we are on last page only render previous button.
 class PaginationButtonView {
-  protected async updatePaginationButtonOnUI(
+  protected async updateButtonsOnPageChange(
     apiURL: string,
     currentPage: number,
     totalPages: number,
@@ -57,7 +57,7 @@ interface UpdateIncomeAndExpense {
   incomeAndExpenseMarkup: string;
   incomeAndExpenseParent: HTMLFormElement;
 }
-export abstract class PaginationView extends PaginationButtonView {
+export abstract class PaginationDomUpdate extends PaginationButtonView {
   protected abstract data: Model;
 
   protected updateIncomeCategory(): void {

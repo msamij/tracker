@@ -2,12 +2,12 @@ import { viewState } from 'app';
 import { Model } from '@models/Model';
 import { constructDate } from '@utils/helpers';
 import { INCOME_PAGE_URL, EXPENSE_PAGE_URL } from '@utils/config';
-import { PaginationView } from './paginationView';
+import { PaginationDomUpdate } from './paginationView';
 import categoryElements from '@DOMElements/category';
 import incomeAndExpenseElements from '@DOMElements/incomeAndExpense';
 import { IncomeAndExpensePaginationButton } from '@budgetViews/components/paginationButtons';
 
-class IncomePaginationView extends PaginationView {
+class IncomePaginationView extends PaginationDomUpdate {
   protected data: Model;
 
   async paginateIncome(): Promise<void> {
@@ -19,7 +19,7 @@ class IncomePaginationView extends PaginationView {
       categoryElements.getCategoryDate('income')
     )}&title=${categoryElements.getCategoryTitle('income')}`;
 
-    this.data = await this.updatePaginationButtonOnUI(
+    this.data = await this.updateButtonsOnPageChange(
       url,
       viewState.state.currentIncomePage,
       +incomeAndExpenseElements.getFormAttributeValue('incomes'),
@@ -37,7 +37,7 @@ class IncomePaginationView extends PaginationView {
   }
 }
 
-class ExpensePaginationView extends PaginationView {
+class ExpensePaginationView extends PaginationDomUpdate {
   protected data: Model;
 
   async paginateExpense(): Promise<void> {
@@ -49,7 +49,7 @@ class ExpensePaginationView extends PaginationView {
       categoryElements.getCategoryDate('expense')
     )}&title=${categoryElements.getCategoryTitle('expense')}`;
 
-    this.data = await this.updatePaginationButtonOnUI(
+    this.data = await this.updateButtonsOnPageChange(
       url,
       viewState.state.currentExpensePage,
       +incomeAndExpenseElements.getFormAttributeValue('expenses'),
