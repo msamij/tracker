@@ -1,6 +1,6 @@
 # tracker
 
-tracker is a django webapp for keeping track of budgets, incomes and expenses.
+tracker is a webapp built using django for keeping track of budgets, incomes and expenses.
 
 ## Installation
 

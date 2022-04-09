@@ -31,8 +31,8 @@ HandlePopupMenuEvent();
 handleOverlayEvent();
 
 HandleAddNewItemEvent(
-  renderCategory.init.bind(renderCategory),
-  renderIncomeAndExpense.init.bind(renderIncomeAndExpense)
+  renderCategory.render.bind(renderCategory),
+  renderIncomeAndExpense.render.bind(renderIncomeAndExpense)
 );
 
 handleBudgetPaginationEvent(

@@ -38,7 +38,7 @@ class RenderCategory extends RenderValidator {
   private budgetPageButton: BudgetPaginationButton;
   private categoryPageButton: CategoryPaginationButton;
 
-  async init(): Promise<void> {
+  async render(): Promise<void> {
     if (viewState.state.buttonType === 'add-expense-category') {
       if (!validDate(viewState.state.inputDate, formatDate(budgetElements.getDate()))) {
         renderMessage(
@@ -124,7 +124,7 @@ class RenderIncomeAndExpense extends RenderValidator {
   private expenseCategoryButton: ExpenseCategoryButton;
   private incomeAndExpensePageButton: IncomeAndExpensePaginationButton;
 
-  async init(): Promise<void> {
+  async render(): Promise<void> {
     if (!validDate(viewState.state.inputDate, viewState.state.categoryDate)) {
       renderMessage(
         viewElements.getMessageElement(),

@@ -16,74 +16,64 @@ import { AddButton } from '@components/addButton';
 import { IncomeAndExpenseComponent } from '@components/incomeAndExpense';
 import { ExpenseCategoryButton } from '@components/expenseCategoryButton';
 
-class BudgetPaginationView extends PaginationDomUpdate {
+export class BudgetPagination extends PaginationDomUpdate {
   protected data: Model;
+  private url: string = `${BUDGET_PAGE_URL}${viewState.state.currentBudgetPage}/`;
 
-  async updateDOMOnBudgetPagination(): Promise<void> {
-    this.data = await this.updateButtonsOnPageChange(
-      `${BUDGET_PAGE_URL}${viewState.state.currentBudgetPage}/`,
+  constructor(getJsonData: (url: string) => Promise<Model>) {
+    super();
+    this.saveData(getJsonData);
+  }
+
+  private async saveData(getJsonData: (url: string) => Promise<Model>): Promise<void> {
+    this.data = await getJsonData(this.url);
+  }
+
+  updateDOMOnBudgetPagination(): void {
+    this.updateButtonsOnPageChange(
       viewState.state.currentBudgetPage,
       +budgetElements.getBudgetCount(),
       budgetElements.getBudgetContainer(),
-      new BudgetPaginationButton({ pageType: 'next' }).getComponentMarkup(),
-      new BudgetPaginationButton({ pageType: 'prev' }).getComponentMarkup()
+      new BudgetPaginationButton().getComponentMarkup('next'),
+      new BudgetPaginationButton().getComponentMarkup('prev')
     );
 
     budgetElements.updateDate(constructBudgetDate(this.data.budgetDate));
     budgetElements.setBudget = this.data.budget;
 
     // Update Income Category.
-    BudgetPaginationView.updateIncomeCategory();
+    this.updateIncomeCategory();
     this.updateButtons(
       viewState.state.prevCount,
       this.data.incomeCategoryCount,
       categoryElements.getFormElement('incomes'),
-      new CategoryPaginationButton({
-        pageType: 'next',
-        buttonType: 'add-income-category',
-      }).getComponentMarkup()
+      new CategoryPaginationButton().getComponentMarkup('next', 'add-income-category')
     );
 
     // Update Income.
-    this.validateAndUpdateIncomeAndExpense({
-      type: 'income',
-      incomeAndExpenseParent: incomeAndExpenseElements.getFormElement('incomes'),
-      addButtonParent: categoryElements.getFormElement('expenses').parentElement,
-      incomeAndExpenseMarkup: new IncomeAndExpenseComponent({
-        type: 'income',
-        title: this.data.incomeTitle,
-        amount: '' + this.data.incomeAmount,
-        date: formatDate(this.data.incomeDate),
-      }).getComponentMarkup(),
-      addButtonMarkup: new ExpenseCategoryButton({}).getComponentMarkup(),
-      prevCount: +incomeAndExpenseElements.getFormAttributeValue('incomes'),
-      nextCount: this.data.incomeCount,
-      removeButton: true,
-    });
+    this.validateAndUpdateIncomeAndExpense(
+      'income',
+      +incomeAndExpenseElements.getFormAttributeValue('incomes'),
+      this.data.incomeCount,
+      true
+    );
     this.updateButtons(
       viewState.state.prevCount,
       this.data.incomeCount,
       incomeAndExpenseElements.getFormElement('incomes'),
-      new IncomeAndExpensePaginationButton({ pageType: 'next', buttonType: 'add-income' }).getComponentMarkup()
+      new IncomeAndExpensePaginationButton().getComponentMarkup('next', 'add-income')
     );
 
     // Update Expense Category.
-    this.validateAndUpdateExpenseCategory({
-      expenseCategoryparent: categoryElements.getFormElement('expenses'),
-      expenseCategoryMarkup: new CategoryComponent({
-        type: 'expense',
-        title: this.data.expenseCategoryTitle,
-        date: formatDate(this.data.expenseCategoryDate),
-      }).getComponentMarkup(),
-      addExpenseButtonMarkup: new AddButton({ buttonType: 'expense' }).getComponentMarkup(),
-      prevCount: +categoryElements.getFormAttributeValue('expenses'),
-      nextCount: this.data.expenseCategoryCount,
-    });
+    this.validateAndUpdateExpenseCategory(
+      +categoryElements.getFormAttributeValue('expenses'),
+      this.data.expenseCategoryCount
+    );
     this.updateButtons(
       viewState.state.prevCount,
       this.data.expenseCategoryCount,
       categoryElements.getFormElement('expenses'),
-      new CategoryPaginationButton({ pageType: 'next', buttonType: 'add-expense-category' }).getComponentMarkup()
+      new CategoryPaginationButton().getComponentMarkup('next', 'add-expense-category')
     );
 
     // Update Expense.
@@ -111,4 +101,4 @@ class BudgetPaginationView extends PaginationDomUpdate {
   }
 }
 
-export default new BudgetPaginationView();
+export default new BudgetPagination();

@@ -5,12 +5,6 @@ import { processGetRequest, processPostRequest } from '@AJAX/Ajax';
 export interface Model {
   budget?: number;
   budgetDate?: string;
-  incomeCategoryDate?: string;
-  incomeCategoryTitle?: string;
-  incomeCategoryCount?: number;
-  expenseCategoryDate?: string;
-  expenseCategoryTitle?: string;
-  expenseCategoryCount?: number;
   incomeDate?: string;
   incomeTitle?: string;
   incomeAmount?: number;
@@ -19,6 +13,12 @@ export interface Model {
   expenseTitle?: string;
   expenseAmount?: number;
   expenseCount?: number;
+  incomeCategoryDate?: string;
+  incomeCategoryTitle?: string;
+  incomeCategoryCount?: number;
+  expenseCategoryDate?: string;
+  expenseCategoryTitle?: string;
+  expenseCategoryCount?: number;
 }
 
 export async function saveCategory(buttonType: string, inputDate: string, inputTitle: string): Promise<string> {
