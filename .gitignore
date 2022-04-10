@@ -8,4 +8,4 @@ node_modules/
 build/
 
 # Byte compiled
-**/__pycache__
+**/tracker/__pycache__
