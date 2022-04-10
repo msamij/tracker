@@ -10,4 +10,4 @@ build/
 # Byte compiled
 # **/tracker/__pycache__/
 # **/tracker/.pyc/
-**/__pycache__/
+__pycache__/
