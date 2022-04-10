@@ -9,3 +9,4 @@ build/
 
 # Byte compiled
 **/tracker/__pycache__
+**/tracker/.pyc
