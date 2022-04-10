@@ -1,9 +1,10 @@
+import { getJsonData } from '@models/Model';
 import { ViewState } from '@budgetViews/state';
 import budgetElements from '@DOMElements/budget';
 import categoryElements from '@DOMElements/category';
-import budgetPaginationView from '@budgetViews/pagination/budget';
-import incomeAndExpenseElements from '@DOMElements/incomeAndExpense';
 import { popupMenuElements } from '@DOMElements/popup';
+import { BudgetPagination } from '@budgetViews/pagination/budget';
+import incomeAndExpenseElements from '@DOMElements/incomeAndExpense';
 import { renderCategory, renderIncomeAndExpense } from '@budgetViews/render';
 import { incomePaginationView, expensePaginationView } from '@budgetViews/pagination/incomeAndExpense';
 import { incomeCategoryPaginationView, expenseCategoryPaginationView } from '@budgetViews/pagination/category';
@@ -25,6 +26,7 @@ import {
 // 3: Implement modify action on incomeCategory, expenseCategory and incomes and expenses.
 
 export const viewState = new ViewState(popupMenuElements, categoryElements);
+const budgetPagination = new BudgetPagination(getJsonData);
 
 HandlePopupMenuEvent();
 
@@ -37,7 +39,7 @@ HandleAddNewItemEvent(
 
 handleBudgetPaginationEvent(
   budgetElements.getBudgetContainer(),
-  budgetPaginationView.updateDOMOnBudgetPagination.bind(budgetPaginationView)
+  budgetPagination.updateDOMOnBudgetPagination.bind(budgetPagination)
 );
 
 handleIncomeCategoryPaginationEvent(

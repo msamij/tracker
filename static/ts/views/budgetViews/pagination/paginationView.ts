@@ -170,7 +170,7 @@ export abstract class PaginationDomUpdate {
   protected updateExpenseCategory(): void {
     categoryElements.setCategoryTitle('expense', this.data.expenseCategoryTitle);
     categoryElements.setCategoryDate('expense', formatDate(this.data.expenseCategoryDate));
-    // Save previous state before updating.
+
     viewState.state.prevCount = +categoryElements.getFormAttributeValue('expenses');
     categoryElements.setFormAttributeValue('expenses', this.data.expenseCategoryCount);
   }
