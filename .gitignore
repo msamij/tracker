@@ -8,4 +8,13 @@ node_modules/
 build/
 
 # Byte compiled
-**/__pycache
+tracker/__pycache__/
+tracker/apps/__pycache__/
+
+tracker/budget/__pycache__/
+tracker/budget/api/__pycache__/
+tracker/budget/migrations/__pycache__/
+tracker/budget/utils/__pycache__/
+
+tracker/users/__pycache__/
+tracker/users/migrations/__pycache__/

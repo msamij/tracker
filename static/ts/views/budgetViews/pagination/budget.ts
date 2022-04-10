@@ -14,19 +14,15 @@ import {
 
 export class BudgetPagination extends PaginationDomUpdate {
   protected data: Model;
-  private getJsonData: (url: string) => Promise<Model>;
+  protected getJsonData: (url: string) => Promise<Model>;
 
   constructor(getJsonData: (url: string) => Promise<Model>) {
     super();
     this.getJsonData = getJsonData;
   }
 
-  private async saveData(): Promise<void> {
-    this.data = await this.getJsonData(`${BUDGET_PAGE_URL}${viewState.state.currentBudgetPage}/`);
-  }
-
-  async updateDOMOnBudgetPagination(): Promise<void> {
-    await this.saveData();
+  async updateDOMOnPagination(): Promise<void> {
+    await this.saveData(`${BUDGET_PAGE_URL}${viewState.state.currentBudgetPage}/`);
 
     this.updateButtonsOnPageChange(
       viewState.state.currentBudgetPage,

@@ -10,12 +10,19 @@ import { ExpenseCategoryButton } from '@components/expenseCategoryButton';
 
 export abstract class PaginationDomUpdate {
   protected abstract data: Model;
+  protected abstract getJsonData: (url: string) => Promise<Model>;
+
+  private incomeAndExpenseParent: (type: 'incomes' | 'expenses') => HTMLFormElement =
+    incomeAndExpenseElements.getFormElement;
+
   private addExpenseButton: string = new AddButton().getComponentMarkup('expense');
   private addExpenseCategoryButton: string = new ExpenseCategoryButton().getComponentMarkup();
   private expenseCategoryparent: HTMLFormElement = categoryElements.getFormElement('expenses');
-  private incomeAndExpenseParent: (type: 'incomes' | 'expenses') => HTMLFormElement =
-    incomeAndExpenseElements.getFormElement;
   private addExpenseCategoryButtonParent: HTMLElement = categoryElements.getFormElement('expenses').parentElement;
+
+  protected async saveData(url: string): Promise<void> {
+    this.data = await this.getJsonData(url);
+  }
 
   protected updateButtonsOnPageChange(
     currentPage: number,
