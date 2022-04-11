@@ -50,7 +50,6 @@ export class IncomeCategoryPagination extends PaginationDomUpdate {
 
 export class ExpenseCategoryPagination extends PaginationDomUpdate {
   protected data: Model;
-
   protected getJsonData: (url: string) => Promise<Model>;
 
   constructor(getJsonData: (url: string) => Promise<Model>) {

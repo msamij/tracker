@@ -9,6 +9,7 @@
       "@utils/*": ["./utils/*"],
       "@models/*": ["./models/*"],
       "@controllers/*": ["./controllers/*"],
+      "@DOM/*": ["./views/budgetViews/DOM/*"],
       "@budgetViews/*": ["./views/budgetViews/*"],
       "@events/*": ["./views/budgetViews/events/*"],
       "@components/*": ["./views/budgetViews/components/*"],

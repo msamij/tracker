@@ -5,9 +5,9 @@ import categoryElements from '@DOMElements/category';
 import { popupMenuElements } from '@DOMElements/popup';
 import { BudgetPagination } from '@budgetViews/pagination/budget';
 import incomeAndExpenseElements from '@DOMElements/incomeAndExpense';
-import { renderCategory, renderIncomeAndExpense } from '@budgetViews/render';
+import { renderCategory, renderIncomeAndExpense } from '@DOM/render';
+import { IncomePagination, ExpensePagination } from '@budgetViews/pagination/incomeAndExpense';
 import { IncomeCategoryPagination, ExpenseCategoryPagination } from '@budgetViews/pagination/category';
-import { incomePaginationView, expensePaginationView } from '@budgetViews/pagination/incomeAndExpense';
 import {
   HandleAddNewItemEvent,
   handleOverlayEvent,
@@ -28,6 +28,8 @@ import {
 export const viewState = new ViewState(popupMenuElements, categoryElements);
 
 const budgetPagination = new BudgetPagination(getJsonData);
+const incomePagination = new IncomePagination(getJsonData);
+const expensePagination = new ExpensePagination(getJsonData);
 const incomeCategoryPagination = new IncomeCategoryPagination(getJsonData);
 const expenseCategoryPagination = new ExpenseCategoryPagination(getJsonData);
 
@@ -52,7 +54,7 @@ handleIncomeCategoryPaginationEvent(
 
 handleIncomePaginationEvent(
   incomeAndExpenseElements.getFormElement('incomes'),
-  incomePaginationView.paginateIncome.bind(incomePaginationView)
+  incomePagination.updateDOMOnPagination.bind(incomePagination)
 );
 
 handleExpenseCategoryPaginationEvent(
@@ -62,5 +64,5 @@ handleExpenseCategoryPaginationEvent(
 
 handleExpensePaginationEvent(
   incomeAndExpenseElements.getFormElement('expenses'),
-  expensePaginationView.paginateExpense.bind(expensePaginationView)
+  expensePagination.updateDOMOnPagination.bind(expensePagination)
 );
