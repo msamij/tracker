@@ -1,8 +1,8 @@
 import { viewState } from 'app';
 import viewElements from '@DOMElements/view';
+import budgetElements from '@DOMElements/budget';
 import { renderMessage } from '@views/errorView';
 import { AddButton } from '@components/addButton';
-import budgetElements from '@DOMElements/budget';
 import categoryElements from '@DOMElements/category';
 import { CategoryComponent } from '@components/category';
 import { saveCategory, saveIncomeAndExpense } from '@models/Model';

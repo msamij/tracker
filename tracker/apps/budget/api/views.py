@@ -17,7 +17,11 @@ def paginate_budget(request, page):
 
     data = {
         "budget": budget.budget,
-        "budgetDate": budget.date
+        "budgetDate": budget.date,
+        "incomeCategoryCount": 0,
+        "incomeCount": 0,
+        "expenseCategoryCount": 0,
+        "expenseCount": 0,
     }
 
     income_category = get_category(

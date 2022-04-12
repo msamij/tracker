@@ -88,8 +88,9 @@ def save_income_and_expense(request, inc_or_exp):
 
 def delete_category(request, inc_or_exp):
     user_id = User.objects.get(username=request.user.username).id
-    month = request.GET.get('month')
+    day = request.GET.get('day')
     year = request.GET.get('year')
+    month = request.GET.get('month')
 
     if inc_or_exp == 'income':
         update_budget(Budget, Income.objects.filter(date__month=month, date__year=year, category=Income_Category.objects.filter(

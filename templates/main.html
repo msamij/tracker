@@ -213,7 +213,7 @@
     <div class="box-container">
       <div class="box-left box-left__expenses">
         
-        {% if expense_category_title %}
+        {% if expense_category_count >= 1 %}
             <button class="btn-primary btn-primary--red add-expense">add expense</button>
         {% endif %}
         
@@ -267,7 +267,7 @@
 
       <div class="box-right box-right__expense-categories">
 
-        {% if income %}
+        {% if expense_category_count >= 1 %}
         <button class="btn-primary btn-primary--orange add-expense-category">add expense category</button>
         {% endif %}
         

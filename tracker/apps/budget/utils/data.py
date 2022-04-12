@@ -22,17 +22,17 @@ def save_budget(Budget, inc_or_exp, data, user):
                date=data['date'], user=user).save()
 
 
-def update_budget(Budget, budget_items, add_or_subtract, user_id, month, year):
+def update_budget(Budget, income_or_expense_objects, add_or_subtract, user_id, month, year):
     budget = Budget.objects.filter(
         date__month=month, date__year=year, user=user_id)[0]
 
-    if len(budget_items) > 0:
+    if len(income_or_expense_objects) > 0:
         if add_or_subtract == 'add':
-            for item in budget_items:
+            for item in income_or_expense_objects:
                 budget.budget += item.amount
                 budget.save()
         else:
-            for item in budget_items:
+            for item in income_or_expense_objects:
                 budget.budget -= item.amount
                 budget.save()
 
