@@ -43,10 +43,10 @@ class RenderCategory extends RenderValidator {
       if (!validDate(viewState.state.inputDate, formatDate(budgetElements.getDate()))) {
         renderMessage(
           viewElements.getMessageElement(),
-          `Date field must contain month ${constructDate(
-            'month',
-            viewState.state.categoryDate
-          )} and year ${constructDate('year', viewState.state.categoryDate)}.`
+          `Date field must contain month ${constructDate('month', budgetElements.getDate())} and year ${constructDate(
+            'year',
+            budgetElements.getDate()
+          )}.`
         );
         return;
       }
@@ -58,6 +58,23 @@ class RenderCategory extends RenderValidator {
   }
 
   protected renderComponent(): void {
+    if (budgetElements.getDate()) {
+      // Category input date is different from current budget date.
+      if (
+        constructDate('month', viewState.state.inputDate) !== constructDate('month', budgetElements.getDate()) ||
+        constructDate('year', viewState.state.inputDate) !== constructDate('year', budgetElements.getDate())
+      ) {
+        this.budgetPageButton = new BudgetPaginationButton(
+          budgetElements.getBudgetContainer(),
+          +budgetElements.getBudgetCount()
+        );
+        this.budgetPageButton.renderComponent('beforeend', this.budgetPageButton.getComponentMarkup('next'));
+        budgetElements.getBudgetContainer().dataset.value = (+budgetElements.getBudgetCount() + 1).toString();
+        // Exit because category input date is different from current month and it rendered next button.
+        return;
+      }
+    }
+
     this.categoryComponent = new CategoryComponent(
       categoryElements.getFormElement(`${this.componentId}s`),
       +categoryElements.getFormAttributeValue(`${this.componentId}s`)
@@ -71,51 +88,41 @@ class RenderCategory extends RenderValidator {
       )
     );
 
-    // Category date is different from current budget date.
-    if (viewState.state.categoryDate) {
-      if (
-        constructDate('month', viewState.state.inputDate) !== constructDate('month', viewState.state.categoryDate) ||
-        constructDate('year', viewState.state.inputDate) !== constructDate('year', viewState.state.categoryDate)
-      ) {
-        this.budgetPageButton = new BudgetPaginationButton(
-          budgetElements.getBudgetContainer(),
-          +budgetElements.getBudgetCount()
-        );
-        this.budgetPageButton.renderComponent('beforeend', this.budgetPageButton.getComponentMarkup('next'));
-        budgetElements.getBudgetContainer().dataset.value = (+budgetElements.getBudgetCount() + 1).toString();
-        return;
-      }
+    if (+categoryElements.getFormAttributeValue(`${this.componentId}s`) > 0) {
+      this.categoryPageButton = new CategoryPaginationButton(
+        categoryElements.getFormElement(`${this.componentId}s`),
+        +categoryElements.getFormAttributeValue(`${this.componentId}s`)
+      );
+      this.categoryPageButton.renderComponent(
+        'beforeend',
+        this.categoryPageButton.getComponentMarkup(
+          'next',
+          viewState.state.buttonType as 'add-income-category' | 'add-expense-category'
+        )
+      );
     }
 
-    this.categoryPageButton = new CategoryPaginationButton(
-      categoryElements.getFormElement(`${this.componentId}s`),
-      +categoryElements.getFormAttributeValue(`${this.componentId}s`)
-    );
-    this.categoryPageButton.renderComponent(
-      'beforeend',
-      this.categoryPageButton.getComponentMarkup(
-        'next',
-        viewState.state.buttonType as 'add-income-category' | 'add-expense-category'
-      )
-    );
-
+    // No category exists.
     this.addButton = new AddButton(
       incomeAndExpenseElements.getBoxLeft(`${this.componentId}s`),
       +categoryElements.getFormAttributeValue(`${this.componentId}s`)
     );
     this.addButton.renderComponent('afterbegin', this.addButton.getComponentMarkup(this.componentId));
 
-    this.categoryComponent.updateComponentState(
-      categoryElements.getFormElement(`${this.componentId}s`),
+    // this.categoryComponent.updateComponentState(
+    //   categoryElements.getFormElement(`${this.componentId}s`),
+    //   +categoryElements.getFormAttributeValue(`${this.componentId}s`) + 1
+    // );
+
+    categoryElements.setFormAttributeValue(
+      `${this.componentId}s`,
       +categoryElements.getFormAttributeValue(`${this.componentId}s`) + 1
     );
 
     if (+budgetElements.getBudgetContainer().dataset.value >= 1) return;
     else budgetElements.getBudgetContainer().dataset.value = '1';
 
-    if (budgetElements.getDate() === '') {
-      budgetElements.updateDate(constructBudgetDate(viewState.state.inputDate));
-    }
+    if (budgetElements.getDate() === '') budgetElements.updateDate(constructBudgetDate(viewState.state.inputDate));
   }
 }
 
@@ -162,17 +169,19 @@ class RenderIncomeAndExpense extends RenderValidator {
       )
     );
 
-    this.incomeAndExpensePageButton = new IncomeAndExpensePaginationButton(
-      incomeAndExpenseElements.getFormElement(`${this.componentId}s`),
-      +incomeAndExpenseElements.getFormAttributeValue(`${this.componentId}s`)
-    );
-    this.incomeAndExpensePageButton.renderComponent(
-      'beforeend',
-      this.incomeAndExpensePageButton.getComponentMarkup(
-        'next',
-        viewState.state.buttonType as 'add-income' | 'add-expense'
-      )
-    );
+    if (+incomeAndExpenseElements.getFormAttributeValue(`${this.componentId}s`) > 0) {
+      this.incomeAndExpensePageButton = new IncomeAndExpensePaginationButton(
+        incomeAndExpenseElements.getFormElement(`${this.componentId}s`),
+        +incomeAndExpenseElements.getFormAttributeValue(`${this.componentId}s`)
+      );
+      this.incomeAndExpensePageButton.renderComponent(
+        'beforeend',
+        this.incomeAndExpensePageButton.getComponentMarkup(
+          'next',
+          viewState.state.buttonType as 'add-income' | 'add-expense'
+        )
+      );
+    }
 
     this.incomeAndExpense.updateComponentState(
       incomeAndExpenseElements.getFormElement(`${this.componentId}s`),

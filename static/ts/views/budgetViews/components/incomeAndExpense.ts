@@ -16,14 +16,14 @@ export class IncomeAndExpenseComponent extends ViewComponent {
       <p class="${componentType}-box__${componentType}-amount">${amount} Rs</p>
       <p class="${componentType}-box__${componentType}-date">${date}</p>
           <div class="action-box">
-          <button type="submit" class="btn-secondary">
+          <button type="submit" class="btn-secondary btn-delete-${componentType}">
             <svg class="btn-secondary__icon btn-secondary__icon--white">
               <use
                 xlink:href="../static/img/symbol-defs.svg#icon-cancel-circle"
               ></use>
             </svg>
           </button>
-        <button class="btn-secondary">
+        <button class="btn-secondary btn-edit-${componentType}">
           <svg class="btn-secondary__icon btn-secondary__icon--white">
             <use
               xlink:href="../static/img/symbol-defs.svg#icon-pen">

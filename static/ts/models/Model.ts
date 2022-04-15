@@ -1,6 +1,6 @@
-import { BUDGET_MENU_URL } from '@utils/config';
 import { constructDate } from '@utils/helpers';
-import { processGetRequest, processPostRequest } from '@AJAX/Ajax';
+import { BUDGET_MENU_URL } from '@utils/config';
+import { processGetRequest, processPostRequest, processDeleteRequest } from '@AJAX/Ajax';
 
 export interface Model {
   budget?: number;
@@ -53,9 +53,17 @@ export async function saveIncomeAndExpense(
   );
 }
 
-export async function deleteCategory(): Promise<void> {}
+export async function deleteCategory(
+  type: 'income' | 'expense',
+  title: string,
+  month: string,
+  year: string
+): Promise<void> {
+  // console.log(`${BUDGET_MENU_URL}delete-${type}-category/?month=${month}&year=${year}&title=${title}`);
+  await processDeleteRequest(`${BUDGET_MENU_URL}delete-${type}-category/?month=${month}&year=${year}&title=${title}`);
+}
 
-export async function getJsonData(url: string): Promise<Model> {
+export async function getJsonDataAsString(url: string): Promise<Model> {
   const result = await processGetRequest(`${url}`);
   return JSON.parse(result);
 }

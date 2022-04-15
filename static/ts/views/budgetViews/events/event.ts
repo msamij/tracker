@@ -160,3 +160,13 @@ export function handleExpensePaginationEvent(expenseContainer: HTMLFormElement, 
     }
   });
 }
+
+export function handleDeleteIncomeCategoryEvent(
+  incomeCategoryContainer: HTMLFormElement,
+  deleteCategory: Function
+): void {
+  incomeCategoryContainer.addEventListener('click', event => {
+    event.preventDefault();
+    if ((event.target as HTMLButtonElement).closest('.btn-delete-income-category')) deleteCategory();
+  });
+}

@@ -10,7 +10,7 @@ import { ExpenseCategoryButton } from '@components/expenseCategoryButton';
 
 export abstract class PaginationDomUpdate {
   protected abstract data: Model;
-  protected abstract getJsonData: (url: string) => Promise<Model>;
+  protected abstract getJsonDataAsString: (url: string) => Promise<Model>;
 
   private incomeAndExpenseParent: (type: 'incomes' | 'expenses') => HTMLFormElement =
     incomeAndExpenseElements.getFormElement;
@@ -21,7 +21,7 @@ export abstract class PaginationDomUpdate {
   private addExpenseCategoryButtonParent: HTMLElement = categoryElements.getFormElement('expenses').parentElement;
 
   protected async saveData(url: string): Promise<void> {
-    this.data = await this.getJsonData(url);
+    this.data = await this.getJsonDataAsString(url);
   }
 
   protected updateButtonsOnPageChange(
@@ -53,11 +53,11 @@ export abstract class PaginationDomUpdate {
     }
   }
 
-  protected updateIncomeCategory(): void {
+  protected validateAndUpdateIncomeCategory(): void {
     // Nothing exists.
-    if (+categoryElements.getFormAttributeValue('incomes') === 0 && this.data.incomeCategoryCount === 0) return;
+    if (!+categoryElements.getFormAttributeValue('incomes') && !this.data.incomeCategoryCount) return;
     // No Previous BUT current exists.
-    else if (+categoryElements.getFormAttributeValue('incomes') === 0 && this.data.incomeCategoryCount > 0) {
+    else if (!+categoryElements.getFormAttributeValue('incomes') && this.data.incomeCategoryCount > 0) {
       const categoryComponent = new CategoryComponent(
         categoryElements.getFormElement('incomes'),
         +categoryElements.getFormAttributeValue('incomes')
@@ -78,13 +78,13 @@ export abstract class PaginationDomUpdate {
       addIncomeButton.renderComponent('afterbegin', addIncomeButton.getComponentMarkup('income'));
     }
     // Previous exists but NOT current.
-    else if (+categoryElements.getFormAttributeValue('incomes') > 0 && this.data.incomeCategoryCount === 0) {
-      categoryElements.getFormElement('incomes').removeChild(document.querySelector('.category__item--income'));
-      incomeAndExpenseElements
-        .getAddButton('income')
-        .parentElement.removeChild(incomeAndExpenseElements.getAddButton('income'));
+    else if (+categoryElements.getFormAttributeValue('incomes') > 0 && !this.data.incomeCategoryCount) {
+      // categoryElements.getFormElement('incomes').removeChild(document.querySelector('.category__item--income'));
+      document.querySelector('.category__item--income').remove();
+      incomeAndExpenseElements.getAddButton('income').remove();
+      // .parentElement.removeChild(incomeAndExpenseElements.getAddButton('income'));
     }
-    // Both exists, Update only don't render :)
+    // Both exists, Update only and don't render :)
     else {
       categoryElements.setCategoryTitle('income', this.data.incomeCategoryTitle);
       categoryElements.setCategoryDate('income', formatDate(this.data.incomeCategoryDate));
@@ -105,7 +105,7 @@ export abstract class PaginationDomUpdate {
       if (prevCount >= 1) this.updateIncomeAndExpense(type);
       // Add new item with new data.
       else {
-        if (type === 'income' && !(this.addExpenseCategoryButtonParent.children[0] instanceof HTMLButtonElement)) {
+        if (!(this.addExpenseCategoryButtonParent.children[0] instanceof HTMLButtonElement)) {
           this.addExpenseCategoryButtonParent.insertAdjacentHTML('afterbegin', this.addExpenseCategoryButton);
         }
 
@@ -144,9 +144,15 @@ export abstract class PaginationDomUpdate {
       //   this.addExpenseCategoryButtonParent.removeChild(document.querySelector('.add-expense-category'));
       // }
 
-      if (this.data.expenseCategoryCount === 0 && this.data.incomeCount === 0) {
+      if (
+        !this.data.incomeCount &&
+        !this.data.expenseCategoryCount &&
+        this.addExpenseCategoryButtonParent.children[0] instanceof HTMLButtonElement &&
+        !(incomeAndExpenseElements.getBoxLeft('expenses').children[0] instanceof HTMLButtonElement)
+      ) {
         this.addExpenseCategoryButtonParent.removeChild(document.querySelector('.add-expense-category'));
       }
+      // Finally.
       incomeAndExpenseElements.setFormAttributeValue(`${type}s`, 0);
     }
   }
@@ -212,9 +218,7 @@ export abstract class PaginationDomUpdate {
     else if ((prevCount >= 1 && nextCount > 1) || (!prevCount && nextCount > 1))
       parent.insertAdjacentHTML('beforeend', buttonMarkup);
     else if ((prevCount > 1 && nextCount === 1) || (prevCount > 1 && !nextCount)) {
-      if (parent.lastElementChild instanceof HTMLButtonElement) {
-        parent.removeChild(parent.lastElementChild);
-      }
+      if (parent.lastElementChild instanceof HTMLButtonElement) parent.removeChild(parent.lastElementChild);
     }
   }
 }

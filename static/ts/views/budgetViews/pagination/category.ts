@@ -9,11 +9,10 @@ import { CategoryPaginationButton, IncomeAndExpensePaginationButton } from '@bud
 
 export class IncomeCategoryPagination extends PaginationDomUpdate {
   protected data: Model;
-  protected getJsonData: (url: string) => Promise<Model>;
 
-  constructor(getJsonData: (url: string) => Promise<Model>) {
+  constructor(protected getJsonDataAsString: (url: string) => Promise<Model>) {
     super();
-    this.getJsonData = getJsonData;
+    this.getJsonDataAsString = getJsonDataAsString;
   }
 
   async updateDOMOnPagination(): Promise<void> {
@@ -32,7 +31,7 @@ export class IncomeCategoryPagination extends PaginationDomUpdate {
       new CategoryPaginationButton().getComponentMarkup('prev', 'add-income-category')
     );
 
-    this.updateIncomeCategory();
+    this.validateAndUpdateIncomeCategory();
     this.validateAndUpdateIncomeAndExpense(
       'income',
       +incomeAndExpenseElements.getFormAttributeValue('incomes'),
@@ -50,11 +49,10 @@ export class IncomeCategoryPagination extends PaginationDomUpdate {
 
 export class ExpenseCategoryPagination extends PaginationDomUpdate {
   protected data: Model;
-  protected getJsonData: (url: string) => Promise<Model>;
 
-  constructor(getJsonData: (url: string) => Promise<Model>) {
+  constructor(protected getJsonDataAsString: (url: string) => Promise<Model>) {
     super();
-    this.getJsonData = getJsonData;
+    this.getJsonDataAsString = getJsonDataAsString;
   }
 
   async updateDOMOnPagination(): Promise<void> {

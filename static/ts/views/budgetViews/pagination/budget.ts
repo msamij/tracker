@@ -14,11 +14,10 @@ import {
 
 export class BudgetPagination extends PaginationDomUpdate {
   protected data: Model;
-  protected getJsonData: (url: string) => Promise<Model>;
 
-  constructor(getJsonData: (url: string) => Promise<Model>) {
+  constructor(protected getJsonDataAsString: (url: string) => Promise<Model>) {
     super();
-    this.getJsonData = getJsonData;
+    this.getJsonDataAsString = getJsonDataAsString;
   }
 
   async updateDOMOnPagination(): Promise<void> {
@@ -35,7 +34,7 @@ export class BudgetPagination extends PaginationDomUpdate {
     budgetElements.updateDate(constructBudgetDate(this.data.budgetDate));
     budgetElements.setBudget = this.data.budget;
 
-    this.updateIncomeCategory();
+    this.validateAndUpdateIncomeCategory();
     this.updateButtons(
       viewState.state.prevCount,
       this.data.incomeCategoryCount,

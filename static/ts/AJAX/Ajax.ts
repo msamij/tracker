@@ -38,3 +38,11 @@ export async function processGetRequest(url: string): Promise<string> {
     throw new Error(error);
   }
 }
+
+export async function processDeleteRequest(url: string): Promise<void> {
+  try {
+    await fetch(url);
+  } catch (error) {
+    throw new Error(error);
+  }
+}

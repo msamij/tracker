@@ -106,7 +106,7 @@
     <div class="box-container">
       <div class="box-left box-left__incomes">
       
-        {% if income_category_title %}
+        {% if income_category_count >= 1 %}
           <button class="btn-primary btn-primary--blue add-income">add income</button>
         {% endif %}
         <h2 class="heading-secondary heading-secondary--blue">incomes</h2>
@@ -127,14 +127,14 @@
               <p class="income-box__income-date">{{ income_date }}</p>
 
               <div class="action-box">
-                <button type="submit" class="btn-secondary">
+                <button type="submit" class="btn-secondary btn-delete-income">
                   <svg class="btn-secondary__icon btn-secondary__icon--white">
                     <use
                       xlink:href="{% static 'img/symbol-defs.svg' %}#icon-cancel-circle"
                     ></use>
                   </svg>
                 </button>
-                <button class="btn-secondary">
+                <button class="btn-secondary btn-edit-income">
                   <svg class="btn-secondary__icon btn-secondary__icon--white">
                     <use
                       xlink:href="{% static 'img/symbol-defs.svg' %}#icon-pen"
@@ -170,20 +170,20 @@
             </svg>
           </button> -->
           
-          {% if income_category_title %}
+          {% if income_category_count >= 1 %}
             <li class="category__item category__item--grey category__item--income">
               <p class="category__title category__title--income">{{ income_category_title }}</p>
               <p class="category__date category__date--income">{{ income_category_date }}</p>
 
               <div class="action-box">
-                <button class="btn-secondary">
+                <button class="btn-secondary btn-delete-income-category">
                   <svg class="btn-secondary__icon btn-secondary__icon--orange">
                     <use
                       xlink:href="{% static 'img/symbol-defs.svg' %}#icon-cancel-circle"
                     ></use>
                   </svg>
                 </button>
-                <button class="btn-secondary">
+                <button class="btn-secondary btn-edit-income-category">
                   <svg class="btn-secondary__icon btn-secondary__icon--orange">
                     <use
                       xlink:href="{% static 'img/symbol-defs.svg' %}#icon-pen"
@@ -235,14 +235,14 @@
               <p class="expense-box__expense-date">{{ expense_date }}</p>
 
               <div class="action-box">
-                <button class="btn-secondary">
+                <button class="btn-secondary btn-delete-expense">
                   <svg class="btn-secondary__icon btn-secondary__icon--white">
                     <use
                       xlink:href="{% static 'img/symbol-defs.svg' %}#icon-cancel-circle"
                     ></use>
                   </svg>
                 </button>
-                <button class="btn-secondary">
+                <button class="btn-secondary btn-edit-expense">
                   <svg class="btn-secondary__icon btn-secondary__icon--white">
                     <use
                       xlink:href="{% static 'img/symbol-defs.svg' %}#icon-pen"
@@ -267,7 +267,7 @@
 
       <div class="box-right box-right__expense-categories">
 
-        {% if expense_category_count >= 1 %}
+        {% if expense_category_count >= 1  or income_count >= 1 %}
         <button class="btn-primary btn-primary--orange add-expense-category">add expense category</button>
         {% endif %}
         
@@ -288,14 +288,14 @@
               <p class="category__date category__date--expense">{{ expense_category_date }}</p>
 
               <div class="action-box">
-                <button class="btn-secondary">
+                <button class="btn-secondary btn-delete-expense-category">
                   <svg class="btn-secondary__icon btn-secondary__icon--orange">
                     <use
                       xlink:href="{% static 'img/symbol-defs.svg' %}#icon-cancel-circle"
                     ></use>
                   </svg>
                 </button>
-                <button class="btn-secondary">
+                <button class="btn-secondary btn-edit-expense-category">
                   <svg class="btn-secondary__icon btn-secondary__icon--orange">
                     <use
                       xlink:href="{% static 'img/symbol-defs.svg' %}#icon-pen"

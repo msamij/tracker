@@ -1,4 +1,5 @@
 import json
+from django.http import JsonResponse
 from django.urls.base import reverse
 from django.shortcuts import redirect, render
 from django.http.response import HttpResponse
@@ -23,6 +24,21 @@ def budget_menu(request):
     form = BudgetForm()
     context['form'] = form
     return render(request, 'main.html', context)
+
+
+def get_budget(request):
+    user_id = User.objects.get(username=request.user.username).id
+    month = request.GET.get('month')
+    year = request.GET.get('year')
+
+    budget = Budget.objects.filter(
+        user=user_id, date__month=month, date__year=year)[0]
+
+    data = {
+        'budget': budget.budget
+    }
+
+    return JsonResponse(data, status=200, safe=False)
 
 
 def save_category(request, inc_or_exp):
@@ -88,19 +104,20 @@ def save_income_and_expense(request, inc_or_exp):
 
 def delete_category(request, inc_or_exp):
     user_id = User.objects.get(username=request.user.username).id
-    day = request.GET.get('day')
+
     year = request.GET.get('year')
     month = request.GET.get('month')
+    title = request.GET.get('title')
 
     if inc_or_exp == 'income':
         update_budget(Budget, Income.objects.filter(date__month=month, date__year=year, category=Income_Category.objects.filter(
-            user=user_id, date__month=month, date__year=year)[:1][0].id), 'subtract', user_id, month, year)
+            user=user_id, date__month=month, date__year=year, title=title)[:1][0].id), 'subtract', user_id, month, year)
         Income_Category.objects.filter(
-            user=user_id, date__month=month, date__year=year).delete()
+            user=user_id, date__month=month, date__year=year, title=title).delete()
     else:
         update_budget(Budget, Expense.objects.filter(date__month=month, date__year=year, category=Expense_Category.objects.filter(
-            user=user_id, date__month=month, date__year=year)[:1][0].id), 'add', user_id, month, year)
+            user=user_id, date__month=month, date__year=year, title=title)[:1][0].id), 'add', user_id, month, year)
         Expense_Category.objects.filter(
-            user=user_id, date__month=month, date__year=year).delete()
+            user=user_id, date__month=month, date__year=year, title=title).delete()
 
     return HttpResponse('success', status=200)

@@ -9,11 +9,10 @@ import { IncomeAndExpensePaginationButton } from '@budgetViews/components/pagina
 
 export class IncomePagination extends PaginationDomUpdate {
   protected data: Model;
-  protected getJsonData: (url: string) => Promise<Model>;
 
-  constructor(getJsonData: (url: string) => Promise<Model>) {
+  constructor(protected getJsonDataAsString: (url: string) => Promise<Model>) {
     super();
-    this.getJsonData = getJsonData;
+    this.getJsonDataAsString = getJsonDataAsString;
   }
 
   async updateDOMOnPagination(): Promise<void> {
@@ -40,11 +39,10 @@ export class IncomePagination extends PaginationDomUpdate {
 
 export class ExpensePagination extends PaginationDomUpdate {
   protected data: Model;
-  protected getJsonData: (url: string) => Promise<Model>;
 
-  constructor(getJsonData: (url: string) => Promise<Model>) {
+  constructor(protected getJsonDataAsString: (url: string) => Promise<Model>) {
     super();
-    this.getJsonData = getJsonData;
+    this.getJsonDataAsString = getJsonDataAsString;
   }
 
   async updateDOMOnPagination(): Promise<void> {

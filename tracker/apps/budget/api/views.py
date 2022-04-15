@@ -78,7 +78,12 @@ def paginate_income_category(request, page):
     if not income_category:
         return HttpResponse("Invalid Page no", status=404)
 
-    data = {}
+    print(income_category)
+    data = {
+        'incomeCategoryCount': 0,
+        'incomeCount': 0,
+    }
+
     data['incomeCategoryDate'] = income_category.date
     data['incomeCategoryTitle'] = income_category.title
     data['incomeCategoryCount'] = Income_Category.objects.filter(
@@ -109,7 +114,11 @@ def paginate_expense_category(request, page):
     if not expense_category:
         return HttpResponse("Invalid Page no", status=404)
 
-    data = {}
+    data = {
+        'expenseCategoryCount': 0,
+        'expenseCount': 0
+    }
+
     data['expenseCategoryDate'] = expense_category.date
     data['expenseCategoryTitle'] = expense_category.title
     data['expenseCategoryCount'] = Expense_Category.objects.filter(
@@ -152,7 +161,7 @@ def paginate_income(request, page):
         "incomeDate": income.date
     }
 
-    return JsonResponse(data)
+    return JsonResponse(data, status=200, safe=False)
 
 
 def paginate_expense(request, page):
@@ -177,4 +186,4 @@ def paginate_expense(request, page):
         "expenseDate": expense.date
     }
 
-    return JsonResponse(data)
+    return JsonResponse(data, status=200, safe=False)

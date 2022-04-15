@@ -17,12 +17,12 @@ export class CategoryComponent extends ViewComponent {
       <p class="category__title category__title--${componentType}">${title}</p>
         <p class="category__date category__date--${componentType}">${date}</p>
       <div class="action-box">
-        <button class="btn-secondary">
+        <button class="btn-secondary btn-delete-${componentType}-category">
           <svg class="btn-secondary__icon btn-secondary__icon--orange">
             <use xlink:href="../static/img/symbol-defs.svg#icon-cancel-circle"></use>
           </svg>
         </button>
-        <button class="btn-secondary">
+        <button class="btn-secondary btn-edit-${componentType}-category">
          <svg class="btn-secondary__icon btn-secondary__icon--orange">
           <use
             xlink:href="../static/img/symbol-defs.svg#icon-pen"

@@ -6,7 +6,10 @@ export class CategoryPaginationButton extends ViewComponent {
   }
 
   protected componentExists(): boolean {
-    return this.componentCount === 1 ? false : true;
+    return this.componentParent.children[1] instanceof HTMLButtonElement ||
+      this.componentParent.children[2] instanceof HTMLButtonElement
+      ? true
+      : false;
   }
 
   getComponentMarkup(page: 'next' | 'prev', buttonType: 'add-income-category' | 'add-expense-category'): string {
@@ -31,7 +34,10 @@ export class IncomeAndExpensePaginationButton extends ViewComponent {
   }
 
   protected componentExists(): boolean {
-    return this.componentCount === 1 ? false : true;
+    return this.componentParent.children[1] instanceof HTMLButtonElement ||
+      this.componentParent.children[2] instanceof HTMLButtonElement
+      ? true
+      : false;
   }
 
   getComponentMarkup(page: 'next' | 'prev', buttonType: 'add-income' | 'add-expense'): string {
@@ -51,7 +57,10 @@ export class BudgetPaginationButton extends ViewComponent {
   }
 
   protected componentExists(): boolean {
-    return this.componentCount === 1 ? false : true;
+    return this.componentParent.children[1] instanceof HTMLButtonElement ||
+      this.componentParent.children[2] instanceof HTMLButtonElement
+      ? true
+      : false;
   }
 
   getComponentMarkup(page: 'next' | 'prev'): string {
