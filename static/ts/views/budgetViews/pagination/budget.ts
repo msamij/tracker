@@ -1,18 +1,18 @@
-import { viewState } from 'app';
-import { Model } from '@models/Model';
-import { BUDGET_PAGE_URL } from '@utils/config';
-import budgetElements from '@DOMElements/budget';
-import categoryElements from '@DOMElements/category';
-import { constructBudgetDate } from '@utils/helpers';
-import incomeAndExpenseElements from '@DOMElements/incomeAndExpense';
-import { PaginationDomUpdate } from '@budgetViews/pagination/paginationView';
 import {
   BudgetPaginationButton,
   CategoryPaginationButton,
   IncomeAndExpensePaginationButton,
 } from '@budgetViews/components/paginationButtons';
+import { PaginationDOMUpdate } from '@budgetViews/pagination/paginationView';
+import budgetElements from '@DOMElements/budget';
+import categoryElements from '@DOMElements/category';
+import incomeAndExpenseElements from '@DOMElements/incomeAndExpense';
+import { Model } from '@models/Model';
+import { BUDGET_PAGE_URL } from '@utils/config';
+import { constructBudgetDate } from '@utils/helpers';
+import { viewState } from 'app';
 
-export class BudgetPagination extends PaginationDomUpdate {
+export class BudgetPagination extends PaginationDOMUpdate {
   protected data: Model;
 
   constructor(protected getJsonDataAsString: (url: string) => Promise<Model>) {
@@ -45,8 +45,7 @@ export class BudgetPagination extends PaginationDomUpdate {
     this.validateAndUpdateIncomeAndExpense(
       'income',
       +incomeAndExpenseElements.getFormAttributeValue('incomes'),
-      this.data.incomeCount,
-      true
+      this.data.incomeCount
     );
     this.updateButtons(
       viewState.state.prevCount,
@@ -69,8 +68,7 @@ export class BudgetPagination extends PaginationDomUpdate {
     this.validateAndUpdateIncomeAndExpense(
       'expense',
       +incomeAndExpenseElements.getFormAttributeValue('expenses'),
-      this.data.expenseCount,
-      true
+      this.data.expenseCount
     );
     this.updateButtons(
       viewState.state.prevCount,

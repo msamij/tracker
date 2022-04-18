@@ -1,13 +1,13 @@
-import { viewState } from 'app';
-import { Model } from '@models/Model';
-import { constructDate } from '@utils/helpers';
-import categoryElements from '@DOMElements/category';
-import { PaginationDomUpdate } from './paginationView';
-import { INCOME_PAGE_URL, EXPENSE_PAGE_URL } from '@utils/config';
-import incomeAndExpenseElements from '@DOMElements/incomeAndExpense';
 import { IncomeAndExpensePaginationButton } from '@budgetViews/components/paginationButtons';
+import { PaginationDOMUpdate } from '@budgetViews/pagination/paginationView';
+import categoryElements from '@DOMElements/category';
+import incomeAndExpenseElements from '@DOMElements/incomeAndExpense';
+import { Model } from '@models/Model';
+import { EXPENSE_PAGE_URL, INCOME_PAGE_URL } from '@utils/config';
+import { constructDate } from '@utils/helpers';
+import { viewState } from 'app';
 
-export class IncomePagination extends PaginationDomUpdate {
+export class IncomePagination extends PaginationDOMUpdate {
   protected data: Model;
 
   constructor(protected getJsonDataAsString: (url: string) => Promise<Model>) {
@@ -37,7 +37,7 @@ export class IncomePagination extends PaginationDomUpdate {
   }
 }
 
-export class ExpensePagination extends PaginationDomUpdate {
+export class ExpensePagination extends PaginationDOMUpdate {
   protected data: Model;
 
   constructor(protected getJsonDataAsString: (url: string) => Promise<Model>) {

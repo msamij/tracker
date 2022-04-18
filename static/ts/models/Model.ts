@@ -1,6 +1,6 @@
-import { constructDate } from '@utils/helpers';
+import { processDeleteRequest, processGetRequest, processPostRequest } from '@AJAX/Ajax';
 import { BUDGET_MENU_URL } from '@utils/config';
-import { processGetRequest, processPostRequest, processDeleteRequest } from '@AJAX/Ajax';
+import { constructDate } from '@utils/helpers';
 
 export interface Model {
   budget?: number;
@@ -53,13 +53,12 @@ export async function saveIncomeAndExpense(
   );
 }
 
-export async function deleteCategory(
+export async function requestDeleteCategory(
   type: 'income' | 'expense',
   title: string,
   month: string,
   year: string
 ): Promise<void> {
-  // console.log(`${BUDGET_MENU_URL}delete-${type}-category/?month=${month}&year=${year}&title=${title}`);
   await processDeleteRequest(`${BUDGET_MENU_URL}delete-${type}-category/?month=${month}&year=${year}&title=${title}`);
 }
 

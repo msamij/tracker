@@ -67,13 +67,6 @@
 
   <section class="income-box">
     <form class="month-box" data-value="{{ budget_count }}">
-      <!-- <button type="submit" class="btn-secondary btn-prev-month">
-        <svg class="btn-secondary__icon btn-secondary__icon--grey">
-          <use
-            xlink:href="{% static 'img/symbol-defs.svg' %}#icon-arrow-with-circle-left"
-          ></use>
-        </svg>
-      </button> -->
       
         <h2 class="month-box__date">
           {% if budget_month and budget_year %}
@@ -112,13 +105,6 @@
         <h2 class="heading-secondary heading-secondary--blue">incomes</h2>
 
         <form class="items-box items-box__incomes" data-value="{{ income_count }}">
-          <!-- <button type="submit" class="btn-secondary btn-prev-income">
-            <svg class="btn-secondary__icon btn-secondary__icon--green">
-              <use
-                xlink:href="{% static 'img/symbol-defs.svg' %}#icon-arrow-with-circle-left"
-              ></use>
-            </svg>
-          </button> -->
           
           {% if income %}
             <li class="items-box__item income-box__income">
@@ -162,13 +148,6 @@
         <h2 class="heading-secondary heading-secondary--orange">categories</h2>
 
         <form class="category category__incomes" data-value="{{ income_category_count }}">
-          <!-- <button type="submit" class="btn-secondary btn-prev-income-category">
-            <svg class="btn-secondary__icon btn-secondary__icon--orange">
-              <use
-                xlink:href="{% static 'img/symbol-defs.svg' %}#icon-arrow-with-circle-left"
-              ></use>
-            </svg>
-          </button> -->
           
           {% if income_category_count >= 1 %}
             <li class="category__item category__item--grey category__item--income">
@@ -220,13 +199,6 @@
         <h2 class="heading-secondary heading-secondary--red">expenses</h2>
 
         <form class="items-box items-box__expenses" data-value="{{ expense_count }}">
-          <!-- <button type="submit" class="btn-secondary btn-prev-expense">
-            <svg class="btn-secondary__icon btn-secondary__icon--pink">
-              <use
-                xlink:href="{% static 'img/symbol-defs.svg' %}#icon-arrow-with-circle-left"
-              ></use>
-            </svg>
-          </button> -->
           
           {% if expense %}
             <li class="items-box__item expense-box__expense">
@@ -274,13 +246,6 @@
         <h2 class="heading-secondary heading-secondary--orange">categories</h2>
 
         <form class="category category__expenses" data-value="{{ expense_category_count }}">
-          <!-- <button type="submit" class="btn-secondary btn-prev-expense-category">
-            <svg class="btn-secondary__icon btn-secondary__icon--orange">
-              <use
-                xlink:href="{% static 'img/symbol-defs.svg' %}#icon-arrow-with-circle-left"
-              ></use>
-            </svg>
-          </button> -->
           
           {% if expense_category_title %}
             <li class="category__item category__item--white category__item--expense">

@@ -1,11 +1,9 @@
 from django.http import JsonResponse
 from django.http.response import HttpResponse
-
 from tracker.apps.users.models import User
-from ..models import (Budget, Income_Category,
-                      Expense_Category, Income, Expense)
-from ..utils.data import (get_budget, get_category,
-                          get_income_and_expense)
+
+from ..models import Budget, Expense, Expense_Category, Income, Income_Category
+from ..utils.data import get_budget, get_category, get_income_and_expense
 
 
 def paginate_budget(request, page):
@@ -78,7 +76,6 @@ def paginate_income_category(request, page):
     if not income_category:
         return HttpResponse("Invalid Page no", status=404)
 
-    print(income_category)
     data = {
         'incomeCategoryCount': 0,
         'incomeCount': 0,

@@ -1,14 +1,14 @@
-import { viewState } from 'app';
+import { AddButton } from '@components/addButton';
+import { CategoryComponent } from '@components/category';
+import { ExpenseCategoryButton } from '@components/expenseCategoryButton';
+import { IncomeAndExpenseComponent } from '@components/incomeAndExpense';
+import categoryElements from '@DOMElements/category';
+import incomeAndExpenseElements from '@DOMElements/incomeAndExpense';
 import { Model } from '@models/Model';
 import { formatDate } from '@utils/helpers';
-import { AddButton } from '@components/addButton';
-import categoryElements from '@DOMElements/category';
-import { CategoryComponent } from '@components/category';
-import incomeAndExpenseElements from '@DOMElements/incomeAndExpense';
-import { IncomeAndExpenseComponent } from '@components/incomeAndExpense';
-import { ExpenseCategoryButton } from '@components/expenseCategoryButton';
+import { viewState } from 'app';
 
-export abstract class PaginationDomUpdate {
+export abstract class PaginationDOMUpdate {
   protected abstract data: Model;
   protected abstract getJsonDataAsString: (url: string) => Promise<Model>;
 
@@ -58,58 +58,49 @@ export abstract class PaginationDomUpdate {
     if (!+categoryElements.getFormAttributeValue('incomes') && !this.data.incomeCategoryCount) return;
     // No Previous BUT current exists.
     else if (!+categoryElements.getFormAttributeValue('incomes') && this.data.incomeCategoryCount > 0) {
-      const categoryComponent = new CategoryComponent(
+      new CategoryComponent(
         categoryElements.getFormElement('incomes'),
         +categoryElements.getFormAttributeValue('incomes')
-      );
-      categoryComponent.renderComponent(
+      ).renderComponent(
         'beforeend',
-        categoryComponent.getComponentMarkup(
+        new CategoryComponent().getComponentMarkup(
           'income',
           this.data.incomeCategoryTitle,
           formatDate(this.data.incomeCategoryDate)
         )
       );
 
-      const addIncomeButton = new AddButton(
+      new AddButton(
         incomeAndExpenseElements.getBoxLeft('incomes'),
         +categoryElements.getFormAttributeValue('incomes')
-      );
-      addIncomeButton.renderComponent('afterbegin', addIncomeButton.getComponentMarkup('income'));
+      ).renderComponent('afterbegin', new AddButton().getComponentMarkup('income'));
     }
+
     // Previous exists but NOT current.
     else if (+categoryElements.getFormAttributeValue('incomes') > 0 && !this.data.incomeCategoryCount) {
-      // categoryElements.getFormElement('incomes').removeChild(document.querySelector('.category__item--income'));
       document.querySelector('.category__item--income').remove();
       incomeAndExpenseElements.getAddButton('income').remove();
-      // .parentElement.removeChild(incomeAndExpenseElements.getAddButton('income'));
     }
+
     // Both exists, Update only and don't render :)
     else {
       categoryElements.setCategoryTitle('income', this.data.incomeCategoryTitle);
       categoryElements.setCategoryDate('income', formatDate(this.data.incomeCategoryDate));
     }
+
     // Save previous state before updating.
     viewState.state.prevCount = +categoryElements.getFormAttributeValue('incomes');
     categoryElements.setFormAttributeValue('incomes', this.data.incomeCategoryCount);
   }
 
-  protected validateAndUpdateIncomeAndExpense(
-    type: 'income' | 'expense',
-    prevCount: number,
-    nextCount: number,
-    removeButton: boolean
-  ): void {
+  protected validateAndUpdateIncomeAndExpense(type: 'income' | 'expense', prevCount: number, nextCount: number): void {
     if (nextCount >= 1) {
-      // Update previous data if it already exists.
       if (prevCount >= 1) this.updateIncomeAndExpense(type);
-      // Add new item with new data.
       else {
         if (!(this.addExpenseCategoryButtonParent.children[0] instanceof HTMLButtonElement)) {
           this.addExpenseCategoryButtonParent.insertAdjacentHTML('afterbegin', this.addExpenseCategoryButton);
         }
 
-        // Render income or expense.
         this.incomeAndExpenseParent(`${type}s`).insertAdjacentHTML(
           'afterbegin',
           new IncomeAndExpenseComponent().getComponentMarkup(
@@ -121,38 +112,32 @@ export abstract class PaginationDomUpdate {
         );
       }
 
-      // Save previous state before updating.
       viewState.state.prevCount = +incomeAndExpenseElements.getFormAttributeValue(`${type}s`);
-      // Update dataset attribute.
       incomeAndExpenseElements.setFormAttributeValue(
         `${type}s`,
         type === 'income' ? this.data.incomeCount : this.data.expenseCount
       );
     }
-
-    // Remove prev Income or expense.
+    //
     else if (prevCount >= 1) {
-      this.incomeAndExpenseParent(`${type}s`).removeChild(
-        type === 'income'
-          ? document.querySelector('.income-box__income')
-          : document.querySelector('.expense-box__expense')
-      );
-
-      // If we're paginating 'income category', and we don't have any incomes for current income category,
-      // Don't remove 'add expense category button', Since we only want to update income category and incomes.
-      // if (type === 'income' && removeButton) {
-      //   this.addExpenseCategoryButtonParent.removeChild(document.querySelector('.add-expense-category'));
-      // }
+      if (incomeAndExpenseElements.getFormElement(`${type}s`).children.length > 0) {
+        this.incomeAndExpenseParent(`${type}s`).removeChild(
+          type === 'income'
+            ? document.querySelector('.income-box__income')
+            : document.querySelector('.expense-box__expense')
+        );
+      }
 
       if (
         !this.data.incomeCount &&
         !this.data.expenseCategoryCount &&
-        this.addExpenseCategoryButtonParent.children[0] instanceof HTMLButtonElement &&
-        !(incomeAndExpenseElements.getBoxLeft('expenses').children[0] instanceof HTMLButtonElement)
+        +categoryElements.getFormAttributeValue('expenses') &&
+        this.addExpenseCategoryButtonParent.children[0] instanceof HTMLButtonElement
       ) {
+        console.log('Hello');
         this.addExpenseCategoryButtonParent.removeChild(document.querySelector('.add-expense-category'));
       }
-      // Finally.
+
       incomeAndExpenseElements.setFormAttributeValue(`${type}s`, 0);
     }
   }
@@ -174,7 +159,6 @@ export abstract class PaginationDomUpdate {
 
   protected validateAndUpdateExpenseCategory(prevCount: number, nextCount: number): void {
     if (nextCount >= 1) {
-      // Update previous expense category data if it exists.
       if (prevCount >= 1) this.updateExpenseCategory();
       else {
         this.expenseCategoryparent.insertAdjacentHTML(
@@ -185,21 +169,24 @@ export abstract class PaginationDomUpdate {
             formatDate(this.data.expenseCategoryDate)
           )
         );
-        // Render add expense button.
+
         document.querySelector('.box-left__expenses').insertAdjacentHTML('afterbegin', this.addExpenseButton);
         viewState.state.prevCount = +categoryElements.getFormAttributeValue('expenses');
-
         categoryElements.setFormAttributeValue('expenses', this.data.expenseCategoryCount);
       }
     }
-
-    // Remove previous expense category.
+    //
     else if (prevCount >= 1) {
-      const expCategory = document.querySelector('.category__item--expense');
-      expCategory.parentElement.removeChild(expCategory);
+      // const expCategory = document.querySelector('.category__item--expense');
+      // expCategory.parentElement.removeChild(expCategory);
 
-      const addExpenseButton = document.querySelector('.btn-primary--red');
-      addExpenseButton.parentElement.removeChild(addExpenseButton);
+      document.querySelector('.category__item--expense').remove();
+
+      document.querySelector('.btn-primary--red').remove();
+
+      // const addExpenseButton = document.querySelector('.btn-primary--red');
+      // addExpenseButton.parentElement.removeChild(addExpenseButton);
+
       categoryElements.setFormAttributeValue('expenses', 0);
     }
   }

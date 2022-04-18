@@ -1,25 +1,25 @@
-import { getJsonDataAsString } from '@models/Model';
+import { BudgetPagination } from '@budgetViews/pagination/budget';
+import { ExpenseCategoryPagination, IncomeCategoryPagination } from '@budgetViews/pagination/category';
+import { ExpensePagination, IncomePagination } from '@budgetViews/pagination/incomeAndExpense';
 import { ViewState } from '@budgetViews/state';
+import { DeleteCategory } from '@DOM/delete';
+import { renderCategory, renderIncomeAndExpense } from '@DOM/render';
 import budgetElements from '@DOMElements/budget';
 import categoryElements from '@DOMElements/category';
-import { popupMenuElements } from '@DOMElements/popup';
-import { BudgetPagination } from '@budgetViews/pagination/budget';
 import incomeAndExpenseElements from '@DOMElements/incomeAndExpense';
-import { renderCategory, renderIncomeAndExpense } from '@DOM/render';
-import { IncomePagination, ExpensePagination } from '@budgetViews/pagination/incomeAndExpense';
-import { IncomeCategoryPagination, ExpenseCategoryPagination } from '@budgetViews/pagination/category';
+import { popupMenuElements } from '@DOMElements/popup';
 import {
   HandleAddNewItemEvent,
-  handleOverlayEvent,
-  HandlePopupMenuEvent,
   handleBudgetPaginationEvent,
-  handleIncomePaginationEvent,
+  handleDeleteCategoryEvent,
+  handleExpenseCategoryPaginationEvent,
   handleExpensePaginationEvent,
   handleIncomeCategoryPaginationEvent,
-  handleExpenseCategoryPaginationEvent,
-  handleDeleteIncomeCategoryEvent,
+  handleIncomePaginationEvent,
+  handleOverlayEvent,
+  HandlePopupMenuEvent,
 } from '@events/event';
-import { deleteIncomeCategory } from '@DOM/delete';
+import { getJsonDataAsString, requestDeleteCategory } from '@models/Model';
 
 // ADMIN PASSWORD: c056BH89Pm
 // TODO:
@@ -32,8 +32,10 @@ export const viewState = new ViewState(popupMenuElements, categoryElements);
 const budgetPagination = new BudgetPagination(getJsonDataAsString);
 const incomePagination = new IncomePagination(getJsonDataAsString);
 const expensePagination = new ExpensePagination(getJsonDataAsString);
-export const incomeCategoryPagination = new IncomeCategoryPagination(getJsonDataAsString);
+const incomeCategoryPagination = new IncomeCategoryPagination(getJsonDataAsString);
 const expenseCategoryPagination = new ExpenseCategoryPagination(getJsonDataAsString);
+const deleteIncomeCategory = new DeleteCategory('income', getJsonDataAsString, requestDeleteCategory);
+const deleteExpenseCategory = new DeleteCategory('expense', getJsonDataAsString, requestDeleteCategory);
 
 HandlePopupMenuEvent();
 
@@ -69,4 +71,7 @@ handleExpensePaginationEvent(
   expensePagination.updateDOMOnPagination.bind(expensePagination)
 );
 
-handleDeleteIncomeCategoryEvent(categoryElements.getFormElement('incomes'), deleteIncomeCategory);
+handleDeleteCategoryEvent(
+  deleteIncomeCategory.delete.bind(deleteIncomeCategory),
+  deleteExpenseCategory.delete.bind(deleteExpenseCategory)
+);

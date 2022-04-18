@@ -1,4 +1,7 @@
 class CategoryElements {
+  getBoxRight(type: 'income' | 'expense'): HTMLDivElement {
+    return document.querySelector(`.box-right__${type}-categories`);
+  }
   getFormElement(categoryType: 'incomes' | 'expenses'): HTMLFormElement {
     return document.querySelector(`.category__${categoryType}`);
   }

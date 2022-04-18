@@ -1,20 +1,21 @@
-import { viewState } from 'app';
-import viewElements from '@DOMElements/view';
-import budgetElements from '@DOMElements/budget';
-import { renderMessage } from '@views/errorView';
-import { AddButton } from '@components/addButton';
-import categoryElements from '@DOMElements/category';
-import { CategoryComponent } from '@components/category';
-import { saveCategory, saveIncomeAndExpense } from '@models/Model';
-import incomeAndExpenseElements from '@DOMElements/incomeAndExpense';
-import { ExpenseCategoryButton } from '@components/expenseCategoryButton';
 import { IncomeAndExpenseComponent } from '@budgetViews/components/incomeAndExpense';
-import { formatDate, constructBudgetDate, validDate, constructDate } from '@utils/helpers';
 import {
+  BudgetPaginationButton,
   CategoryPaginationButton,
   IncomeAndExpensePaginationButton,
-  BudgetPaginationButton,
 } from '@budgetViews/components/paginationButtons';
+import { AddButton } from '@components/addButton';
+import { CategoryComponent } from '@components/category';
+import { ExpenseCategoryButton } from '@components/expenseCategoryButton';
+import budgetElements from '@DOMElements/budget';
+import categoryElements from '@DOMElements/category';
+import incomeAndExpenseElements from '@DOMElements/incomeAndExpense';
+import viewElements from '@DOMElements/view';
+import { getJsonDataAsString, saveCategory, saveIncomeAndExpense } from '@models/Model';
+import { BUDGET_MENU_URL } from '@utils/config';
+import { constructBudgetDate, constructDate, formatDate, validDate } from '@utils/helpers';
+import { renderMessage } from '@views/errorView';
+import { viewState } from 'app';
 
 abstract class RenderValidator {
   protected abstract renderComponent(): void;
@@ -26,18 +27,17 @@ abstract class RenderValidator {
       if (viewState.state.buttonType === 'add-income' || viewState.state.buttonType === 'add-income-category')
         this.componentId = 'income';
       else this.componentId = 'expense';
-      renderMessage(viewElements.getMessageElement(), 'Successfully added 😀');
+      this.renderMessage();
       this.renderComponent();
     }
+  }
+
+  protected renderMessage(): void {
+    renderMessage(viewElements.getMessageElement(), 'Successfully added 😀');
   }
 }
 
 class RenderCategory extends RenderValidator {
-  private addButton: AddButton;
-  private categoryComponent: CategoryComponent;
-  private budgetPageButton: BudgetPaginationButton;
-  private categoryPageButton: CategoryPaginationButton;
-
   async render(): Promise<void> {
     if (viewState.state.buttonType === 'add-expense-category') {
       if (!validDate(viewState.state.inputDate, formatDate(budgetElements.getDate()))) {
@@ -52,85 +52,119 @@ class RenderCategory extends RenderValidator {
       }
     }
 
+    if (await this.validateAndRenderBudgetPageButtons()) return;
+
     this.validateAndRenderComponent(
       await saveCategory(viewState.state.buttonType, viewState.state.inputDate, viewState.state.inputTitle)
     );
   }
 
   protected renderComponent(): void {
-    if (budgetElements.getDate()) {
-      // Category input date is different from current budget date.
-      if (
-        constructDate('month', viewState.state.inputDate) !== constructDate('month', budgetElements.getDate()) ||
-        constructDate('year', viewState.state.inputDate) !== constructDate('year', budgetElements.getDate())
-      ) {
-        this.budgetPageButton = new BudgetPaginationButton(
-          budgetElements.getBudgetContainer(),
-          +budgetElements.getBudgetCount()
-        );
-        this.budgetPageButton.renderComponent('beforeend', this.budgetPageButton.getComponentMarkup('next'));
-        budgetElements.getBudgetContainer().dataset.value = (+budgetElements.getBudgetCount() + 1).toString();
-        // Exit because category input date is different from current month and it rendered next button.
-        return;
-      }
-    }
-
-    this.categoryComponent = new CategoryComponent(
+    const categoryComponent = new CategoryComponent(
       categoryElements.getFormElement(`${this.componentId}s`),
       +categoryElements.getFormAttributeValue(`${this.componentId}s`)
     );
-    this.categoryComponent.renderComponent(
+    categoryComponent.renderComponent(
       'beforeend',
-      this.categoryComponent.getComponentMarkup(
+      categoryComponent.getComponentMarkup(
         this.componentId,
         viewState.state.inputTitle,
         formatDate(viewState.state.inputDate)
       )
     );
 
+    this.renderCategoryPageButtons();
+
+    const addButton = new AddButton(
+      incomeAndExpenseElements.getBoxLeft(`${this.componentId}s`),
+      +categoryElements.getFormAttributeValue(`${this.componentId}s`)
+    );
+    addButton.renderComponent('afterbegin', addButton.getComponentMarkup(this.componentId));
+
+    this.updateComponentState();
+    this.updateBudgetUI();
+  }
+
+  private renderCategoryPageButtons(): void {
     if (+categoryElements.getFormAttributeValue(`${this.componentId}s`) > 0) {
-      this.categoryPageButton = new CategoryPaginationButton(
+      const categoryPageButton = new CategoryPaginationButton(
         categoryElements.getFormElement(`${this.componentId}s`),
         +categoryElements.getFormAttributeValue(`${this.componentId}s`)
       );
-      this.categoryPageButton.renderComponent(
+      categoryPageButton.renderComponent(
         'beforeend',
-        this.categoryPageButton.getComponentMarkup(
+        categoryPageButton.getComponentMarkup(
           'next',
           viewState.state.buttonType as 'add-income-category' | 'add-expense-category'
         )
       );
     }
+  }
 
-    // No category exists.
-    this.addButton = new AddButton(
-      incomeAndExpenseElements.getBoxLeft(`${this.componentId}s`),
-      +categoryElements.getFormAttributeValue(`${this.componentId}s`)
-    );
-    this.addButton.renderComponent('afterbegin', this.addButton.getComponentMarkup(this.componentId));
-
-    // this.categoryComponent.updateComponentState(
-    //   categoryElements.getFormElement(`${this.componentId}s`),
-    //   +categoryElements.getFormAttributeValue(`${this.componentId}s`) + 1
-    // );
-
+  private updateComponentState(): void {
     categoryElements.setFormAttributeValue(
       `${this.componentId}s`,
       +categoryElements.getFormAttributeValue(`${this.componentId}s`) + 1
     );
+  }
 
+  private async validateAndRenderBudgetPageButtons(): Promise<boolean> {
+    if (budgetElements.getDate()) {
+      if (
+        constructDate('month', viewState.state.inputDate) !== constructDate('month', budgetElements.getDate()) ||
+        constructDate('year', viewState.state.inputDate) !== constructDate('year', budgetElements.getDate())
+      ) {
+        if (await this.saveCategoryOnExistingBudget()) return true;
+        this.renderBudgetPageButtons();
+        await this.save();
+        // Exit when render budget page buttons.
+        return true;
+      }
+    }
+  }
+
+  private async saveCategoryOnExistingBudget(): Promise<boolean> {
+    if (await this.budgetExists()) {
+      await this.save();
+      return true;
+    }
+    return false;
+  }
+
+  private async save(): Promise<void> {
+    await saveCategory(viewState.state.buttonType, viewState.state.inputDate, viewState.state.inputTitle);
+    this.renderMessage();
+  }
+
+  private renderBudgetPageButtons(): void {
+    const budgetPageButton = new BudgetPaginationButton(
+      budgetElements.getBudgetContainer(),
+      +budgetElements.getBudgetCount()
+    );
+    budgetPageButton.renderComponent('beforeend', budgetPageButton.getComponentMarkup('next'));
+    budgetElements.getBudgetContainer().dataset.value = (+budgetElements.getBudgetCount() + 1).toString();
+  }
+
+  private updateBudgetUI(): void {
     if (+budgetElements.getBudgetContainer().dataset.value >= 1) return;
     else budgetElements.getBudgetContainer().dataset.value = '1';
 
     if (budgetElements.getDate() === '') budgetElements.updateDate(constructBudgetDate(viewState.state.inputDate));
   }
+
+  private async budgetExists(): Promise<boolean> {
+    const { budget } = await getJsonDataAsString(
+      `${BUDGET_MENU_URL}budget/?month=${constructDate('month', viewState.state.inputDate)}&year=${constructDate(
+        'year',
+        viewState.state.inputDate
+      )}`
+    );
+    // Server can response 'null'.
+    return budget !== null ? true : false;
+  }
 }
 
 class RenderIncomeAndExpense extends RenderValidator {
-  private incomeAndExpense: IncomeAndExpenseComponent;
-  private expenseCategoryButton: ExpenseCategoryButton;
-  private incomeAndExpensePageButton: IncomeAndExpensePaginationButton;
-
   async render(): Promise<void> {
     if (!validDate(viewState.state.inputDate, viewState.state.categoryDate)) {
       renderMessage(
@@ -155,13 +189,13 @@ class RenderIncomeAndExpense extends RenderValidator {
   }
 
   protected renderComponent(): void {
-    this.incomeAndExpense = new IncomeAndExpenseComponent(
+    const incomeAndExpense = new IncomeAndExpenseComponent(
       incomeAndExpenseElements.getFormElement(`${this.componentId}s`),
       +incomeAndExpenseElements.getFormAttributeValue(`${this.componentId}s`)
     );
-    this.incomeAndExpense.renderComponent(
+    incomeAndExpense.renderComponent(
       'beforeend',
-      this.incomeAndExpense.getComponentMarkup(
+      incomeAndExpense.getComponentMarkup(
         this.componentId,
         viewState.state.inputTitle,
         viewState.state.inputAmount,
@@ -169,35 +203,49 @@ class RenderIncomeAndExpense extends RenderValidator {
       )
     );
 
+    this.renderPageButtons();
+    this.updateComponentState();
+    this.renderExpenseCategoryButton();
+    this.updateBudget();
+  }
+
+  private renderPageButtons(): void {
     if (+incomeAndExpenseElements.getFormAttributeValue(`${this.componentId}s`) > 0) {
-      this.incomeAndExpensePageButton = new IncomeAndExpensePaginationButton(
+      const incomeAndExpensePageButton = new IncomeAndExpensePaginationButton(
         incomeAndExpenseElements.getFormElement(`${this.componentId}s`),
         +incomeAndExpenseElements.getFormAttributeValue(`${this.componentId}s`)
       );
-      this.incomeAndExpensePageButton.renderComponent(
+      incomeAndExpensePageButton.renderComponent(
         'beforeend',
-        this.incomeAndExpensePageButton.getComponentMarkup(
+        incomeAndExpensePageButton.getComponentMarkup(
           'next',
           viewState.state.buttonType as 'add-income' | 'add-expense'
         )
       );
     }
+  }
 
-    this.incomeAndExpense.updateComponentState(
-      incomeAndExpenseElements.getFormElement(`${this.componentId}s`),
+  private updateComponentState(): void {
+    incomeAndExpenseElements.setFormAttributeValue(
+      `${this.componentId}s`,
       +incomeAndExpenseElements.getFormAttributeValue(`${this.componentId}s`) + 1
     );
+  }
 
+  private renderExpenseCategoryButton(): void {
     if (
       this.componentId === 'income' &&
       !(categoryElements.getExpenseCategoryContainer().children[0] instanceof HTMLButtonElement)
     ) {
-      this.expenseCategoryButton = new ExpenseCategoryButton(
+      const expenseCategoryButton = new ExpenseCategoryButton(
         categoryElements.getExpenseCategoryContainer(),
         +incomeAndExpenseElements.getFormAttributeValue(`${this.componentId}s`)
       );
-      this.expenseCategoryButton.renderComponent('afterbegin', this.expenseCategoryButton.getComponentMarkup());
+      expenseCategoryButton.renderComponent('afterbegin', expenseCategoryButton.getComponentMarkup());
     }
+  }
+
+  private updateBudget(): void {
     budgetElements.updateBudget(viewState.state.inputAmount, `${this.componentId}`);
   }
 }

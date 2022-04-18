@@ -1,18 +1,17 @@
 import json
-from django.http import JsonResponse
-from django.urls.base import reverse
-from django.shortcuts import redirect, render
-from django.http.response import HttpResponse
+
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from django.http.response import HttpResponse
+from django.shortcuts import redirect, render
+from django.urls.base import reverse
+from tracker.apps.users.models import User
 
 from .forms import BudgetForm
-from tracker.apps.users.models import User
-from .models import (Budget, Income_Category,
-                     Expense_Category, Income, Expense)
-from .utils.validators import (valid_budget,
-                               valid_category,
+from .models import Budget, Expense, Expense_Category, Income, Income_Category
+from .utils.data import get_budget_menu_data, save_budget, update_budget
+from .utils.validators import (valid_budget, valid_category,
                                valid_income_and_expense)
-from .utils.data import (get_budget_menu_data, save_budget, update_budget)
 
 
 @login_required(login_url='signup')
@@ -32,10 +31,10 @@ def get_budget(request):
     year = request.GET.get('year')
 
     budget = Budget.objects.filter(
-        user=user_id, date__month=month, date__year=year)[0]
+        user=user_id, date__month=month, date__year=year)
 
     data = {
-        'budget': budget.budget
+        'budget':  None if not budget else budget[0].budget
     }
 
     return JsonResponse(data, status=200, safe=False)

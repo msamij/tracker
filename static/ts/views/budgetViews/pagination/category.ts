@@ -1,13 +1,13 @@
-import { viewState } from 'app';
-import { Model } from '@models/Model';
-import { constructDate } from '@utils/helpers';
-import categoryElements from '@DOMElements/category';
-import { PaginationDomUpdate } from './paginationView';
-import incomeAndExpenseElements from '@DOMElements/incomeAndExpense';
-import { INCOME_CATEGORY_PAGE_URL, EXPENSE_CATEGORY_PAGE_URL } from '@utils/config';
 import { CategoryPaginationButton, IncomeAndExpensePaginationButton } from '@budgetViews/components/paginationButtons';
+import { PaginationDOMUpdate } from '@budgetViews/pagination/paginationView';
+import categoryElements from '@DOMElements/category';
+import incomeAndExpenseElements from '@DOMElements/incomeAndExpense';
+import { Model } from '@models/Model';
+import { EXPENSE_CATEGORY_PAGE_URL, INCOME_CATEGORY_PAGE_URL } from '@utils/config';
+import { constructDate } from '@utils/helpers';
+import { viewState } from 'app';
 
-export class IncomeCategoryPagination extends PaginationDomUpdate {
+export class IncomeCategoryPagination extends PaginationDOMUpdate {
   protected data: Model;
 
   constructor(protected getJsonDataAsString: (url: string) => Promise<Model>) {
@@ -35,8 +35,7 @@ export class IncomeCategoryPagination extends PaginationDomUpdate {
     this.validateAndUpdateIncomeAndExpense(
       'income',
       +incomeAndExpenseElements.getFormAttributeValue('incomes'),
-      this.data.incomeCount,
-      false
+      this.data.incomeCount
     );
     this.updateButtons(
       viewState.state.prevCount,
@@ -47,7 +46,7 @@ export class IncomeCategoryPagination extends PaginationDomUpdate {
   }
 }
 
-export class ExpenseCategoryPagination extends PaginationDomUpdate {
+export class ExpenseCategoryPagination extends PaginationDOMUpdate {
   protected data: Model;
 
   constructor(protected getJsonDataAsString: (url: string) => Promise<Model>) {
@@ -75,8 +74,7 @@ export class ExpenseCategoryPagination extends PaginationDomUpdate {
     this.validateAndUpdateIncomeAndExpense(
       'expense',
       +incomeAndExpenseElements.getFormAttributeValue('expenses'),
-      this.data.expenseCount,
-      false
+      this.data.expenseCount
     );
     this.updateButtons(
       viewState.state.prevCount,

@@ -1,6 +1,6 @@
 from django.core.paginator import Paginator
-from .context import (generate_budget_context,
-                      generate_category_context,
+
+from .context import (generate_budget_context, generate_category_context,
                       generate_income_and_expense_context)
 
 

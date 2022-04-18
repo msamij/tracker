@@ -1,9 +1,9 @@
-import { viewState } from 'app';
-import viewElements from '@DOMElements/view';
 import budgetView from '@DOMElements/budget';
 import categoryElements from '@DOMElements/category';
 import incomeAndElements from '@DOMElements/incomeAndExpense';
-import { popupMenuElements, popupMenuDOM } from '@DOMElements/popup';
+import { popupMenuDOM, popupMenuElements } from '@DOMElements/popup';
+import viewElements from '@DOMElements/view';
+import { viewState } from 'app';
 
 export function handleOverlayEvent(): void {
   viewElements.getOverlay().addEventListener('click', () => {
@@ -161,12 +161,12 @@ export function handleExpensePaginationEvent(expenseContainer: HTMLFormElement, 
   });
 }
 
-export function handleDeleteIncomeCategoryEvent(
-  incomeCategoryContainer: HTMLFormElement,
-  deleteCategory: Function
-): void {
-  incomeCategoryContainer.addEventListener('click', event => {
-    event.preventDefault();
-    if ((event.target as HTMLButtonElement).closest('.btn-delete-income-category')) deleteCategory();
+export function handleDeleteCategoryEvent(deleteIncomeCategory: Function, deleteExpenseCategory: Function): void {
+  [categoryElements.getFormElement('incomes'), categoryElements.getFormElement('expenses')].forEach(el => {
+    el.addEventListener('click', event => {
+      event.preventDefault();
+      if ((event.target as HTMLButtonElement).closest('.btn-delete-income-category')) deleteIncomeCategory();
+      else if ((event.target as HTMLButtonElement).closest('.btn-delete-expense-category')) deleteExpenseCategory();
+    });
   });
 }
