@@ -1,3 +1,7 @@
+/**
+ * This class serves as the base for components that can rendered into the DOM,
+ * It provides reusable functionality to render components that exists in child classes.
+ */
 export abstract class ViewComponent {
   protected abstract componentParent?: HTMLElement;
   protected abstract componentExists(): boolean;
@@ -10,14 +14,5 @@ export abstract class ViewComponent {
   renderComponent(position: 'afterbegin' | 'afterend' | 'beforebegin' | 'beforeend', componentMarkup: string): void {
     if (this.componentExists()) return;
     this.componentParent.insertAdjacentHTML(position, componentMarkup);
-  }
-
-  /**
-   * Updates the component dataset attribute
-   * @param component HTML node on which you want to update the dataset attribute.
-   * @param value which'll replace the current dataset attribute of the component.
-   */
-  updateComponentState(component: HTMLElement, value: number | string): void {
-    component.dataset.value = '' + value;
   }
 }

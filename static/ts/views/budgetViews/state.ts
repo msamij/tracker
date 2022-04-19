@@ -25,7 +25,7 @@ export class ViewState {
     currentExpenseCategoryPage: 1,
   };
 
-  constructor(public popupMenuEl: PopupMenu, public categoryEl: Category) {}
+  constructor(private popupMenuEl: PopupMenu, private categoryEl: Category) {}
 
   updateStateOnAddNewElement(): void {
     let type1: 'category' | 'item', type2: 'income' | 'expense';
@@ -48,11 +48,5 @@ export class ViewState {
 
   get state() {
     return this.viewState;
-  }
-  set buttonType(buttonType: string) {
-    this.viewState.buttonType = buttonType;
-  }
-  set menuType(menuType: HTMLFormElement) {
-    this.viewState.menuType = menuType;
   }
 }

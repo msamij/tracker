@@ -1,20 +1,20 @@
-class BudgetElements {
-  getBudgetContainer(): HTMLFormElement {
+export class BudgetElements {
+  static getBudgetContainer(): HTMLFormElement {
     return document.querySelector('.month-box');
   }
-  getBudgetCount(): string {
+  static getBudgetCount(): string {
     return this.getBudgetContainer().dataset.value;
   }
-  getDate(): string {
+  static getDate(): string {
     return (document.querySelector('.month-box__date') as HTMLHeadingElement).innerText;
   }
-  updateDate(date: string): void {
+  static updateDate(date: string): void {
     document.querySelector('.month-box__date').textContent = date;
   }
-  set setBudget(budget: number) {
+  static set setBudget(budget: number) {
     document.querySelector('.income-box__heading--sub').textContent = '' + budget;
   }
-  updateBudget(budget: string, type: 'income' | 'expense'): void {
+  static updateBudget(budget: string, type: 'income' | 'expense'): void {
     let UIBudget: number = +document.querySelector('.income-box__heading--sub').textContent;
 
     if (type === 'income') UIBudget += +budget;
@@ -23,5 +23,3 @@ class BudgetElements {
     document.querySelector('.income-box__heading--sub').textContent = UIBudget.toString();
   }
 }
-
-export default new BudgetElements();

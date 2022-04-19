@@ -7,11 +7,11 @@ import {
 import { AddButton } from '@components/addButton';
 import { CategoryComponent } from '@components/category';
 import { ExpenseCategoryButton } from '@components/expenseCategoryButton';
-import budgetElements from '@DOMElements/budget';
-import categoryElements from '@DOMElements/category';
-import incomeAndExpenseElements from '@DOMElements/incomeAndExpense';
-import viewElements from '@DOMElements/view';
-import { getJsonDataAsString, saveCategory, saveIncomeAndExpense } from '@models/Model';
+import { BudgetElements } from '@DOMElements/budget';
+import { CategoryElements } from '@DOMElements/category';
+import { IncomeAndExpenseElements } from '@DOMElements/incomeAndExpense';
+import { ViewElements } from '@DOMElements/view';
+import { Model } from '@models/Model';
 import { BUDGET_MENU_URL } from '@utils/config';
 import { constructBudgetDate, constructDate, formatDate, validDate } from '@utils/helpers';
 import { renderMessage } from '@views/errorView';
@@ -22,7 +22,7 @@ abstract class RenderValidator {
   protected componentId: 'income' | 'expense';
 
   protected validateAndRenderComponent(response: string): void {
-    if (response !== 'success') renderMessage(viewElements.getMessageElement(), response);
+    if (response !== 'success') renderMessage(ViewElements.getMessageElement(), response);
     else {
       if (viewState.state.buttonType === 'add-income' || viewState.state.buttonType === 'add-income-category')
         this.componentId = 'income';
@@ -33,19 +33,26 @@ abstract class RenderValidator {
   }
 
   protected renderMessage(): void {
-    renderMessage(viewElements.getMessageElement(), 'Successfully added 😀');
+    renderMessage(ViewElements.getMessageElement(), 'Successfully added 😀');
   }
 }
 
-class RenderCategory extends RenderValidator {
+export class RenderCategory extends RenderValidator {
+  constructor(
+    private getJsonDataAsString: (url: string) => Promise<Model>,
+    private saveCategory: (buttonType: string, inputDate: string, inputTitle: string) => Promise<string>
+  ) {
+    super();
+  }
+
   async render(): Promise<void> {
     if (viewState.state.buttonType === 'add-expense-category') {
-      if (!validDate(viewState.state.inputDate, formatDate(budgetElements.getDate()))) {
+      if (!validDate(viewState.state.inputDate, formatDate(BudgetElements.getDate()))) {
         renderMessage(
-          viewElements.getMessageElement(),
-          `Date field must contain month ${constructDate('month', budgetElements.getDate())} and year ${constructDate(
+          ViewElements.getMessageElement(),
+          `Date field must contain month ${constructDate('month', BudgetElements.getDate())} and year ${constructDate(
             'year',
-            budgetElements.getDate()
+            BudgetElements.getDate()
           )}.`
         );
         return;
@@ -55,14 +62,14 @@ class RenderCategory extends RenderValidator {
     if (await this.validateAndRenderBudgetPageButtons()) return;
 
     this.validateAndRenderComponent(
-      await saveCategory(viewState.state.buttonType, viewState.state.inputDate, viewState.state.inputTitle)
+      await this.saveCategory(viewState.state.buttonType, viewState.state.inputDate, viewState.state.inputTitle)
     );
   }
 
   protected renderComponent(): void {
     const categoryComponent = new CategoryComponent(
-      categoryElements.getFormElement(`${this.componentId}s`),
-      +categoryElements.getFormAttributeValue(`${this.componentId}s`)
+      CategoryElements.getFormElement(`${this.componentId}s`),
+      +CategoryElements.getFormAttributeValue(`${this.componentId}s`)
     );
     categoryComponent.renderComponent(
       'beforeend',
@@ -76,8 +83,8 @@ class RenderCategory extends RenderValidator {
     this.renderCategoryPageButtons();
 
     const addButton = new AddButton(
-      incomeAndExpenseElements.getBoxLeft(`${this.componentId}s`),
-      +categoryElements.getFormAttributeValue(`${this.componentId}s`)
+      IncomeAndExpenseElements.getBoxLeft(`${this.componentId}s`),
+      +CategoryElements.getFormAttributeValue(`${this.componentId}s`)
     );
     addButton.renderComponent('afterbegin', addButton.getComponentMarkup(this.componentId));
 
@@ -86,10 +93,10 @@ class RenderCategory extends RenderValidator {
   }
 
   private renderCategoryPageButtons(): void {
-    if (+categoryElements.getFormAttributeValue(`${this.componentId}s`) > 0) {
+    if (+CategoryElements.getFormAttributeValue(`${this.componentId}s`) > 0) {
       const categoryPageButton = new CategoryPaginationButton(
-        categoryElements.getFormElement(`${this.componentId}s`),
-        +categoryElements.getFormAttributeValue(`${this.componentId}s`)
+        CategoryElements.getFormElement(`${this.componentId}s`),
+        +CategoryElements.getFormAttributeValue(`${this.componentId}s`)
       );
       categoryPageButton.renderComponent(
         'beforeend',
@@ -102,17 +109,17 @@ class RenderCategory extends RenderValidator {
   }
 
   private updateComponentState(): void {
-    categoryElements.setFormAttributeValue(
+    CategoryElements.setFormAttributeValue(
       `${this.componentId}s`,
-      +categoryElements.getFormAttributeValue(`${this.componentId}s`) + 1
+      +CategoryElements.getFormAttributeValue(`${this.componentId}s`) + 1
     );
   }
 
   private async validateAndRenderBudgetPageButtons(): Promise<boolean> {
-    if (budgetElements.getDate()) {
+    if (BudgetElements.getDate()) {
       if (
-        constructDate('month', viewState.state.inputDate) !== constructDate('month', budgetElements.getDate()) ||
-        constructDate('year', viewState.state.inputDate) !== constructDate('year', budgetElements.getDate())
+        constructDate('month', viewState.state.inputDate) !== constructDate('month', BudgetElements.getDate()) ||
+        constructDate('year', viewState.state.inputDate) !== constructDate('year', BudgetElements.getDate())
       ) {
         if (await this.saveCategoryOnExistingBudget()) return true;
         this.renderBudgetPageButtons();
@@ -132,28 +139,28 @@ class RenderCategory extends RenderValidator {
   }
 
   private async save(): Promise<void> {
-    await saveCategory(viewState.state.buttonType, viewState.state.inputDate, viewState.state.inputTitle);
+    await this.saveCategory(viewState.state.buttonType, viewState.state.inputDate, viewState.state.inputTitle);
     this.renderMessage();
   }
 
   private renderBudgetPageButtons(): void {
     const budgetPageButton = new BudgetPaginationButton(
-      budgetElements.getBudgetContainer(),
-      +budgetElements.getBudgetCount()
+      BudgetElements.getBudgetContainer(),
+      +BudgetElements.getBudgetCount()
     );
     budgetPageButton.renderComponent('beforeend', budgetPageButton.getComponentMarkup('next'));
-    budgetElements.getBudgetContainer().dataset.value = (+budgetElements.getBudgetCount() + 1).toString();
+    BudgetElements.getBudgetContainer().dataset.value = (+BudgetElements.getBudgetCount() + 1).toString();
   }
 
   private updateBudgetUI(): void {
-    if (+budgetElements.getBudgetContainer().dataset.value >= 1) return;
-    else budgetElements.getBudgetContainer().dataset.value = '1';
+    if (+BudgetElements.getBudgetContainer().dataset.value >= 1) return;
+    else BudgetElements.getBudgetContainer().dataset.value = '1';
 
-    if (budgetElements.getDate() === '') budgetElements.updateDate(constructBudgetDate(viewState.state.inputDate));
+    if (BudgetElements.getDate() === '') BudgetElements.updateDate(constructBudgetDate(viewState.state.inputDate));
   }
 
   private async budgetExists(): Promise<boolean> {
-    const { budget } = await getJsonDataAsString(
+    const { budget } = await this.getJsonDataAsString(
       `${BUDGET_MENU_URL}budget/?month=${constructDate('month', viewState.state.inputDate)}&year=${constructDate(
         'year',
         viewState.state.inputDate
@@ -164,11 +171,23 @@ class RenderCategory extends RenderValidator {
   }
 }
 
-class RenderIncomeAndExpense extends RenderValidator {
+export class RenderIncomeAndExpense extends RenderValidator {
+  constructor(
+    private saveIncomeAndExpense: (
+      buttonType: string,
+      inputDate: string,
+      inputTitle: string,
+      inputAmount: string,
+      categoryTitle: string
+    ) => Promise<string>
+  ) {
+    super();
+  }
+
   async render(): Promise<void> {
     if (!validDate(viewState.state.inputDate, viewState.state.categoryDate)) {
       renderMessage(
-        viewElements.getMessageElement(),
+        ViewElements.getMessageElement(),
         `Date field must contain month ${constructDate('month', viewState.state.categoryDate)} and year ${constructDate(
           'year',
           viewState.state.categoryDate
@@ -178,7 +197,7 @@ class RenderIncomeAndExpense extends RenderValidator {
     }
 
     this.validateAndRenderComponent(
-      await saveIncomeAndExpense(
+      await this.saveIncomeAndExpense(
         viewState.state.buttonType,
         viewState.state.inputDate,
         viewState.state.inputTitle,
@@ -190,8 +209,8 @@ class RenderIncomeAndExpense extends RenderValidator {
 
   protected renderComponent(): void {
     const incomeAndExpense = new IncomeAndExpenseComponent(
-      incomeAndExpenseElements.getFormElement(`${this.componentId}s`),
-      +incomeAndExpenseElements.getFormAttributeValue(`${this.componentId}s`)
+      IncomeAndExpenseElements.getFormElement(`${this.componentId}s`),
+      +IncomeAndExpenseElements.getFormAttributeValue(`${this.componentId}s`)
     );
     incomeAndExpense.renderComponent(
       'beforeend',
@@ -210,10 +229,10 @@ class RenderIncomeAndExpense extends RenderValidator {
   }
 
   private renderPageButtons(): void {
-    if (+incomeAndExpenseElements.getFormAttributeValue(`${this.componentId}s`) > 0) {
+    if (+IncomeAndExpenseElements.getFormAttributeValue(`${this.componentId}s`) > 0) {
       const incomeAndExpensePageButton = new IncomeAndExpensePaginationButton(
-        incomeAndExpenseElements.getFormElement(`${this.componentId}s`),
-        +incomeAndExpenseElements.getFormAttributeValue(`${this.componentId}s`)
+        IncomeAndExpenseElements.getFormElement(`${this.componentId}s`),
+        +IncomeAndExpenseElements.getFormAttributeValue(`${this.componentId}s`)
       );
       incomeAndExpensePageButton.renderComponent(
         'beforeend',
@@ -226,29 +245,26 @@ class RenderIncomeAndExpense extends RenderValidator {
   }
 
   private updateComponentState(): void {
-    incomeAndExpenseElements.setFormAttributeValue(
+    IncomeAndExpenseElements.setFormAttributeValue(
       `${this.componentId}s`,
-      +incomeAndExpenseElements.getFormAttributeValue(`${this.componentId}s`) + 1
+      +IncomeAndExpenseElements.getFormAttributeValue(`${this.componentId}s`) + 1
     );
   }
 
   private renderExpenseCategoryButton(): void {
     if (
       this.componentId === 'income' &&
-      !(categoryElements.getExpenseCategoryContainer().children[0] instanceof HTMLButtonElement)
+      !(CategoryElements.getBoxRight('expense').children[0] instanceof HTMLButtonElement)
     ) {
       const expenseCategoryButton = new ExpenseCategoryButton(
-        categoryElements.getExpenseCategoryContainer(),
-        +incomeAndExpenseElements.getFormAttributeValue(`${this.componentId}s`)
+        CategoryElements.getBoxRight('expense'),
+        +IncomeAndExpenseElements.getFormAttributeValue(`${this.componentId}s`)
       );
       expenseCategoryButton.renderComponent('afterbegin', expenseCategoryButton.getComponentMarkup());
     }
   }
 
   private updateBudget(): void {
-    budgetElements.updateBudget(viewState.state.inputAmount, `${this.componentId}`);
+    BudgetElements.updateBudget(viewState.state.inputAmount, `${this.componentId}`);
   }
 }
-
-export const renderCategory = new RenderCategory();
-export const renderIncomeAndExpense = new RenderIncomeAndExpense();

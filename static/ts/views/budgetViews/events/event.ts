@@ -1,45 +1,45 @@
-import budgetView from '@DOMElements/budget';
-import categoryElements from '@DOMElements/category';
-import incomeAndElements from '@DOMElements/incomeAndExpense';
-import { popupMenuDOM, popupMenuElements } from '@DOMElements/popup';
-import viewElements from '@DOMElements/view';
+import { BudgetElements } from '@DOMElements/budget';
+import { CategoryElements } from '@DOMElements/category';
+import { IncomeAndExpenseElements } from '@DOMElements/incomeAndExpense';
+import { PopupMenuDOM, PopupMenuElements } from '@DOMElements/popup';
+import { ViewElements } from '@DOMElements/view';
 import { viewState } from 'app';
 
 export function handleOverlayEvent(): void {
-  viewElements.getOverlay().addEventListener('click', () => {
-    popupMenuDOM.togglePopupMenu(viewState.state.menuType, viewElements.getOverlay(), 'hidden', '0');
+  ViewElements.getOverlay().addEventListener('click', () => {
+    PopupMenuDOM.togglePopupMenu(viewState.state.menuType, ViewElements.getOverlay(), 'hidden', '0');
   });
 }
 
 export function HandlePopupMenuEvent(): void {
-  viewElements.getContainer().addEventListener('click', event => {
+  ViewElements.getContainer().addEventListener('click', event => {
     if (
       (event.target as HTMLButtonElement).closest('.add-income-category') ||
       (event.target as HTMLButtonElement).closest('.add-expense-category')
     ) {
-      viewState.buttonType = popupMenuDOM.getPopupMenuClickedButton(event);
-      viewState.menuType = popupMenuElements.getPopupMenu('category');
+      viewState.state.buttonType = PopupMenuDOM.getPopupMenuClickedButton(event);
+      viewState.state.menuType = PopupMenuElements.getPopupMenu('category');
 
-      popupMenuDOM.togglePopupMenu(viewState.state.menuType, viewElements.getOverlay(), 'visible', '1');
+      PopupMenuDOM.togglePopupMenu(viewState.state.menuType, ViewElements.getOverlay(), 'visible', '1');
     } else if (
       (event.target as HTMLButtonElement).closest('.add-income') ||
       (event.target as HTMLButtonElement).closest('.add-expense')
     ) {
-      viewState.menuType = popupMenuElements.getPopupMenu('item');
-      viewState.buttonType = popupMenuDOM.getPopupMenuClickedButton(event);
+      viewState.state.menuType.menuType = PopupMenuElements.getPopupMenu('item');
+      viewState.state.buttonType = PopupMenuDOM.getPopupMenuClickedButton(event);
 
-      popupMenuDOM.togglePopupMenu(viewState.state.menuType, viewElements.getOverlay(), 'visible', '1');
+      PopupMenuDOM.togglePopupMenu(viewState.state.menuType, ViewElements.getOverlay(), 'visible', '1');
     }
   });
 }
 
 export function HandleAddNewItemEvent(submitCategoryForm: Function, submitIncomeAndExpenseForm: Function): void {
-  [popupMenuElements.getPopupMenu('category'), popupMenuElements.getPopupMenu('item')].forEach(el => {
+  [PopupMenuElements.getPopupMenu('category'), PopupMenuElements.getPopupMenu('item')].forEach(el => {
     el.addEventListener('submit', event => {
       event.preventDefault();
       viewState.updateStateOnAddNewElement();
-      popupMenuDOM.clearInputFields(viewState.state.menuType);
-      popupMenuDOM.togglePopupMenu(viewState.state.menuType, viewElements.getOverlay(), 'hidden', '0');
+      PopupMenuDOM.clearInputFields(viewState.state.menuType);
+      PopupMenuDOM.togglePopupMenu(viewState.state.menuType, ViewElements.getOverlay(), 'hidden', '0');
 
       if (viewState.state.buttonType === 'add-income-category' || viewState.state.buttonType === 'add-expense-category')
         submitCategoryForm();
@@ -48,12 +48,12 @@ export function HandleAddNewItemEvent(submitCategoryForm: Function, submitIncome
   });
 }
 
-export function handleBudgetPaginationEvent(budgetContainer: HTMLFormElement, paginateBudget: Function): void {
-  budgetContainer.addEventListener('click', event => {
+export function handleBudgetPaginationEvent(paginateBudget: Function): void {
+  BudgetElements.getBudgetContainer().addEventListener('click', event => {
     event.preventDefault();
     if (
       (event.target as HTMLButtonElement).closest('.btn-next-month') &&
-      viewState.state.currentBudgetPage < +budgetView.getBudgetCount()
+      viewState.state.currentBudgetPage < +BudgetElements.getBudgetCount()
     ) {
       viewState.state.currentBudgetPage += 1;
       viewState.state.currentIncomeCategoryPage = 1;
@@ -75,15 +75,12 @@ export function handleBudgetPaginationEvent(budgetContainer: HTMLFormElement, pa
   });
 }
 
-export function handleIncomeCategoryPaginationEvent(
-  incomeCategryContainer: HTMLFormElement,
-  paginateIncomeCategory: Function
-): void {
-  incomeCategryContainer.addEventListener('click', event => {
+export function handleIncomeCategoryPaginationEvent(paginateIncomeCategory: Function): void {
+  CategoryElements.getFormElement('incomes').addEventListener('click', event => {
     event.preventDefault();
     if (
       (event.target as HTMLButtonElement).closest('.btn-next-income-category') &&
-      viewState.state.currentIncomeCategoryPage < +categoryElements.getFormAttributeValue('incomes')
+      viewState.state.currentIncomeCategoryPage < +CategoryElements.getFormAttributeValue('incomes')
     ) {
       viewState.state.currentIncomeCategoryPage += 1;
       viewState.state.currentIncomePage = 1;
@@ -99,15 +96,12 @@ export function handleIncomeCategoryPaginationEvent(
   });
 }
 
-export function handleExpenseCategoryPaginationEvent(
-  expenseCategryContainer: HTMLFormElement,
-  paginateExpenseCategory: Function
-): void {
-  expenseCategryContainer.addEventListener('click', event => {
+export function handleExpenseCategoryPaginationEvent(paginateExpenseCategory: Function): void {
+  CategoryElements.getFormElement('expenses').addEventListener('click', event => {
     event.preventDefault();
     if (
       (event.target as HTMLButtonElement).closest('.btn-next-expense-category') &&
-      viewState.state.currentExpenseCategoryPage < +categoryElements.getFormAttributeValue('expenses')
+      viewState.state.currentExpenseCategoryPage < +CategoryElements.getFormAttributeValue('expenses')
     ) {
       viewState.state.currentExpenseCategoryPage += 1;
       viewState.state.currentExpensePage = 1;
@@ -123,12 +117,12 @@ export function handleExpenseCategoryPaginationEvent(
   });
 }
 
-export function handleIncomePaginationEvent(incomeContainer: HTMLFormElement, paginateIncome: Function): void {
-  incomeContainer.addEventListener('click', event => {
+export function handleIncomePaginationEvent(paginateIncome: Function): void {
+  IncomeAndExpenseElements.getFormElement('incomes').addEventListener('click', event => {
     event.preventDefault();
     if (
       (event.target as HTMLButtonElement).closest('.btn-next-income') &&
-      viewState.state.currentIncomePage < +incomeAndElements.getFormAttributeValue('incomes')
+      viewState.state.currentIncomePage < +IncomeAndExpenseElements.getFormAttributeValue('incomes')
     ) {
       viewState.state.currentIncomePage += 1;
       paginateIncome();
@@ -142,12 +136,12 @@ export function handleIncomePaginationEvent(incomeContainer: HTMLFormElement, pa
   });
 }
 
-export function handleExpensePaginationEvent(expenseContainer: HTMLFormElement, paginateExpense: Function): void {
-  expenseContainer.addEventListener('click', event => {
+export function handleExpensePaginationEvent(paginateExpense: Function): void {
+  IncomeAndExpenseElements.getFormElement('expenses').addEventListener('click', event => {
     event.preventDefault();
     if (
       (event.target as HTMLButtonElement).closest('.btn-next-expense') &&
-      viewState.state.currentExpensePage < +incomeAndElements.getFormAttributeValue('expenses')
+      viewState.state.currentExpensePage < +IncomeAndExpenseElements.getFormAttributeValue('expenses')
     ) {
       viewState.state.currentExpensePage += 1;
       paginateExpense();
@@ -162,7 +156,7 @@ export function handleExpensePaginationEvent(expenseContainer: HTMLFormElement, 
 }
 
 export function handleDeleteCategoryEvent(deleteIncomeCategory: Function, deleteExpenseCategory: Function): void {
-  [categoryElements.getFormElement('incomes'), categoryElements.getFormElement('expenses')].forEach(el => {
+  [CategoryElements.getFormElement('incomes'), CategoryElements.getFormElement('expenses')].forEach(el => {
     el.addEventListener('click', event => {
       event.preventDefault();
       if ((event.target as HTMLButtonElement).closest('.btn-delete-income-category')) deleteIncomeCategory();

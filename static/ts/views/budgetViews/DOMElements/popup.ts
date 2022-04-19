@@ -1,40 +1,51 @@
-class PopupMenuElements {
+/**
+ * This class provide APi's to interact with the popupmenu,
+ * and this cannot be instantiated.
+ */
+export class PopupMenuElements {
+  private constructor() {}
+
   /**
    * @param menuType = 'category' to get category__menu.
    * @param menuType = 'item' to get item__menu.
    */
-  getPopupMenu(menuType: 'category' | 'item'): HTMLFormElement {
+  static getPopupMenu(menuType: 'category' | 'item'): HTMLFormElement {
     return document.querySelector(`.menu__${menuType}`);
   }
+
   /**
    * @param type = 'title' to get the input title of item__menu.
    * @param type = 'category' to get the input title of category__menu.
    */
-  getInputTitle(type: 'category' | 'item'): string {
+  static getInputTitle(type: 'category' | 'item'): string {
     return (document.querySelector(`.input__${type}`) as HTMLInputElement).value;
   }
 
-  getInputAmount(): string {
+  static getInputAmount(): string {
     return (document.querySelector('.input__amount') as HTMLInputElement).value;
   }
+
   /**
    * @param type = 'category' to get inputDate from category__menu
    * @param type = 'item' to get inputDate from item__menu.
    */
-  getInputDate(type: 'category' | 'item'): string {
+  static getInputDate(type: 'category' | 'item'): string {
     return (document.querySelector(`.input__date${type === 'category' ? '--category' : ''}`) as HTMLInputElement).value;
   }
 }
 
 /**
- * This class is responsible for manipulating the popup menu.
+ * This class provide APi's to manipulate DOM for popupmenu,
+ * therefore it cannot be instantiated.
  */
-class PopupMenuDOM {
+export class PopupMenuDOM {
+  private constructor() {}
+
   /**
    * Clear the input fields of current rendered popup menu.
    * @param menuType HTMLFormElement
    */
-  clearInputFields(menuType: HTMLFormElement): void {
+  static clearInputFields(menuType: HTMLFormElement): void {
     document.querySelector(`.${menuType.classList[1]}`).childNodes.forEach(node => {
       (node as HTMLInputElement).value = '';
     });
@@ -44,7 +55,7 @@ class PopupMenuDOM {
    * Returns the class name of the button which was clicked.
    * @param event Event object.
    */
-  getPopupMenuClickedButton(event: Event): string {
+  static getPopupMenuClickedButton(event: Event): string {
     // Extract className of the button which was clicked.
     const classList = (event.target as HTMLButtonElement).classList;
     return (event.target as HTMLButtonElement).classList[classList.length - 1];
@@ -55,7 +66,7 @@ class PopupMenuDOM {
    * or render category menu to handle income category or expense category data.
    * @param menuType must be either 'menuCategory' or 'menuItem'.
    */
-  togglePopupMenu(
+  static togglePopupMenu(
     menuType: HTMLFormElement,
     overlay: HTMLElement,
     visibility: 'visible' | 'hidden',
@@ -67,6 +78,3 @@ class PopupMenuDOM {
     overlay.style.opacity = opacity;
   }
 }
-
-export const popupMenuDOM = new PopupMenuDOM();
-export const popupMenuElements = new PopupMenuElements();

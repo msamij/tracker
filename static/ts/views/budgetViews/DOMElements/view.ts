@@ -1,16 +1,16 @@
 /**
- * This Class contains common DOM elements.
+ * This class provide APi's to get common DOM elements.
  **/
-class ViewElements {
-  getOverlay(): HTMLDivElement {
+export class ViewElements {
+  private constructor() {}
+
+  static getOverlay(): HTMLDivElement {
     return document.querySelector('.overlay');
   }
-  getContainer(): HTMLDivElement {
+  static getContainer(): HTMLDivElement {
     return document.querySelector('.container');
   }
-  getMessageElement(): HTMLDivElement {
+  static getMessageElement(): HTMLDivElement {
     return document.querySelector('.message');
   }
 }
-
-export default new ViewElements();
