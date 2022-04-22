@@ -14,6 +14,15 @@ export class IncomeAndExpenseElements {
   static getIncomeAndExpense(type: 'income' | 'expense'): HTMLLIElement {
     return document.querySelector(`.${type}-box__${type}`);
   }
+  static getIncomeAndExpenseTitle(type: 'income' | 'expense'): string {
+    return document.querySelector(`.${type}-box__${type}-type`).textContent;
+  }
+  static getIncomeAndExpenseAmount(type: 'income' | 'expense'): string {
+    return document.querySelector(`.${type}-box__${type}-amount`).textContent;
+  }
+  static getIncomeAndExpenseDate(type: 'income' | 'expense'): string {
+    return document.querySelector(`.${type}-box__${type}-date`).textContent;
+  }
   static getFormAttributeValue(type: 'incomes' | 'expenses'): string {
     return this.getFormElement(type).dataset.value;
   }

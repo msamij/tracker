@@ -1,4 +1,9 @@
+/**
+ * This class provide APi's to manipulate DOM for the Budget.
+ */
 export class BudgetElements {
+  private constructor() {}
+
   static getBudgetContainer(): HTMLFormElement {
     return document.querySelector('.month-box');
   }

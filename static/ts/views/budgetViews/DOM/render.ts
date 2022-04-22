@@ -258,7 +258,7 @@ export class RenderIncomeAndExpense extends RenderValidator {
     ) {
       const expenseCategoryButton = new ExpenseCategoryButton(
         CategoryElements.getBoxRight('expense'),
-        +IncomeAndExpenseElements.getFormAttributeValue(`${this.componentId}s`)
+        +IncomeAndExpenseElements.getFormAttributeValue('incomes')
       );
       expenseCategoryButton.renderComponent('afterbegin', expenseCategoryButton.getComponentMarkup());
     }

@@ -11,12 +11,12 @@ def valid_category(category, data):
 
 
 def valid_income_and_expense(inc_or_exp, data):
-    filter_data = inc_or_exp.objects.filter(
+    item = inc_or_exp.objects.filter(
         title=data['title'],
         date__month=data['month'],
         date__year=data['year'],
         category=data['category'].id)
-    if filter_data:
+    if item:
         return
     else:
         return True
@@ -25,7 +25,6 @@ def valid_income_and_expense(inc_or_exp, data):
 def valid_budget(budget, user_id, month, year):
     budget_found = budget.objects.filter(
         date__month=month, date__year=year, user=user_id)
-    print(budget_found)
     if budget_found:
         return
     else:

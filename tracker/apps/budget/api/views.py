@@ -155,7 +155,8 @@ def paginate_income(request, page):
     data = {
         "incomeTitle": income.title,
         "incomeAmount": income.amount,
-        "incomeDate": income.date
+        "incomeDate": income.date,
+        "incomeCount": 1
     }
 
     return JsonResponse(data, status=200, safe=False)
@@ -180,7 +181,8 @@ def paginate_expense(request, page):
     data = {
         "expenseTitle": expense.title,
         "expenseAmount": expense.amount,
-        "expenseDate": expense.date
+        "expenseDate": expense.date,
+        "expenseCount": 1
     }
 
     return JsonResponse(data, status=200, safe=False)

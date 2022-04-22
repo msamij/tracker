@@ -62,6 +62,18 @@ export async function requestDeleteCategory(
   await processDeleteRequest(`${BUDGET_MENU_URL}delete-${type}-category/?month=${month}&year=${year}&title=${title}`);
 }
 
+export async function requestDeleteIncomeAndExpense(
+  type: 'income' | 'expense',
+  title: string,
+  categoryTitle: string,
+  month: string,
+  year: string
+): Promise<void> {
+  await processDeleteRequest(
+    `${BUDGET_MENU_URL}delete-${type}/?month=${month}&year=${year}&title=${title}&categoryTitle=${categoryTitle}`
+  );
+}
+
 export async function getJsonDataAsString(url: string): Promise<Model> {
   const result = await processGetRequest(`${url}`);
   return JSON.parse(result);

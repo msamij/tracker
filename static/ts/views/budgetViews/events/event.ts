@@ -25,7 +25,7 @@ export function HandlePopupMenuEvent(): void {
       (event.target as HTMLButtonElement).closest('.add-income') ||
       (event.target as HTMLButtonElement).closest('.add-expense')
     ) {
-      viewState.state.menuType.menuType = PopupMenuElements.getPopupMenu('item');
+      viewState.state.menuType = PopupMenuElements.getPopupMenu('item');
       viewState.state.buttonType = PopupMenuDOM.getPopupMenuClickedButton(event);
 
       PopupMenuDOM.togglePopupMenu(viewState.state.menuType, ViewElements.getOverlay(), 'visible', '1');
@@ -163,4 +163,16 @@ export function handleDeleteCategoryEvent(deleteIncomeCategory: Function, delete
       else if ((event.target as HTMLButtonElement).closest('.btn-delete-expense-category')) deleteExpenseCategory();
     });
   });
+}
+
+export function handleDeleteIncomeAndExpenseEvent(deleteIncome: Function, deleteExpense: Function): void {
+  [IncomeAndExpenseElements.getFormElement('incomes'), IncomeAndExpenseElements.getFormElement('expenses')].forEach(
+    el => {
+      el.addEventListener('click', event => {
+        event.preventDefault();
+        if ((event.target as HTMLButtonElement).closest('.btn-delete-income')) deleteIncome();
+        else if ((event.target as HTMLButtonElement).closest('.btn-delete-expense')) deleteExpense();
+      });
+    }
+  );
 }

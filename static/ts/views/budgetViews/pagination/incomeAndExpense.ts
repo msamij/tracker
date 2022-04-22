@@ -7,62 +7,36 @@ import { EXPENSE_PAGE_URL, INCOME_PAGE_URL } from '@utils/config';
 import { constructDate } from '@utils/helpers';
 import { viewState } from 'app';
 
-export class IncomePagination extends PaginationDOMUpdateAdapter {
+export class IncomeAndExpensePagination extends PaginationDOMUpdateAdapter {
   protected data: Model;
 
-  constructor(protected getJsonDataAsString: (url: string) => Promise<Model>) {
+  constructor(protected type: 'income' | 'expense', protected getJsonDataAsString: (url: string) => Promise<Model>) {
     super();
+    this.type = type;
     this.getJsonDataAsString = getJsonDataAsString;
   }
 
   async updateDOMOnPagination(): Promise<void> {
+    const baseUrl = this.type === 'income' ? INCOME_PAGE_URL : EXPENSE_PAGE_URL;
+    const currentPage = this.type === 'income' ? viewState.state.currentIncomePage : viewState.state.currentExpensePage;
+
     await this.saveData(
-      `${INCOME_PAGE_URL}${viewState.state.currentIncomePage}/?month=${+constructDate(
+      `${baseUrl}${currentPage}/?month=${+constructDate(
         'month',
-        CategoryElements.getCategoryDate('income')
+        IncomeAndExpenseElements.getIncomeAndExpenseDate(`${this.type}`)
       )}&year=${+constructDate(
         'year',
-        CategoryElements.getCategoryDate('income')
-      )}&title=${CategoryElements.getCategoryTitle('income')}`
+        IncomeAndExpenseElements.getIncomeAndExpenseDate(`${this.type}`)
+      )}&title=${CategoryElements.getCategoryTitle(`${this.type}`)}`
     );
 
     this.updateButtonsOnPageChange(
-      viewState.state.currentIncomePage,
-      +IncomeAndExpenseElements.getFormAttributeValue('incomes'),
-      IncomeAndExpenseElements.getFormElement('incomes'),
-      new IncomeAndExpensePaginationButton().getComponentMarkup('next', 'add-income'),
-      new IncomeAndExpensePaginationButton().getComponentMarkup('prev', 'add-income')
+      currentPage,
+      +IncomeAndExpenseElements.getFormAttributeValue(`${this.type}s`),
+      IncomeAndExpenseElements.getFormElement(`${this.type}s`),
+      new IncomeAndExpensePaginationButton().getComponentMarkup('next', `add-${this.type}`),
+      new IncomeAndExpensePaginationButton().getComponentMarkup('prev', `add-${this.type}`)
     );
-    this.updateIncomeAndExpense('income');
-  }
-}
-
-export class ExpensePagination extends PaginationDOMUpdateAdapter {
-  protected data: Model;
-
-  constructor(protected getJsonDataAsString: (url: string) => Promise<Model>) {
-    super();
-    this.getJsonDataAsString = getJsonDataAsString;
-  }
-
-  async updateDOMOnPagination(): Promise<void> {
-    await this.saveData(
-      `${EXPENSE_PAGE_URL}${viewState.state.currentExpensePage}/?month=${+constructDate(
-        'month',
-        CategoryElements.getCategoryDate('expense')
-      )}&year=${+constructDate(
-        'year',
-        CategoryElements.getCategoryDate('expense')
-      )}&title=${CategoryElements.getCategoryTitle('expense')}`
-    );
-
-    this.updateButtonsOnPageChange(
-      viewState.state.currentExpensePage,
-      +IncomeAndExpenseElements.getFormAttributeValue('expenses'),
-      IncomeAndExpenseElements.getFormElement('expenses'),
-      new IncomeAndExpensePaginationButton().getComponentMarkup('next', 'add-expense'),
-      new IncomeAndExpensePaginationButton().getComponentMarkup('prev', 'add-expense')
-    );
-    this.updateIncomeAndExpense('expense');
+    this.updateIncomeAndExpense(`${this.type}`);
   }
 }

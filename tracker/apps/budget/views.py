@@ -120,3 +120,27 @@ def delete_category(request, inc_or_exp):
             user=user_id, date__month=month, date__year=year, title=title).delete()
 
     return HttpResponse('success', status=200)
+
+
+def delete_income_and_expense(request, inc_or_exp):
+    user_id = User.objects.get(username=request.user.username).id
+
+    year = request.GET.get('year')
+    month = request.GET.get('month')
+    title = request.GET.get('title')
+    category_title = request.GET.get('categoryTitle')
+
+    if inc_or_exp == 'income':
+        income = Income.objects.filter(
+            date__month=month, date__year=year, title=title, category=Income_Category.objects.filter(
+                user=user_id, date__month=month, date__year=year, title=category_title)[:1][0].id)
+        update_budget(Budget, income, 'subtract', user_id, month, year)
+        income.delete()
+    else:
+        expense = Expense.objects.filter(
+            date__month=month, date__year=year, title=title, category=Expense_Category.objects.filter(
+                user=user_id, date__month=month, date__year=year, title=category_title)[:1][0].id)
+        update_budget(Budget, expense, 'add', user_id, month, year)
+        expense.delete()
+
+    return HttpResponse('success', status=200)

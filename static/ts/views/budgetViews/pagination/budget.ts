@@ -20,6 +20,7 @@ export class BudgetPagination extends PaginationDOMUpdateAdapter {
     this.getJsonDataAsString = getJsonDataAsString;
   }
 
+  // Overridden.
   protected validateAddExpenseCategoryButtonRender(): boolean {
     if (this.data.incomeCount > 0 || this.data.expenseCategoryCount > 0) {
       if (!(CategoryElements.getBoxRight('expense').children[0] instanceof HTMLButtonElement)) return true;
@@ -27,9 +28,10 @@ export class BudgetPagination extends PaginationDOMUpdateAdapter {
     return;
   }
 
+  // Overridden.
   protected validateAddExpenseCategoryButtonRemove(): boolean {
     if (!this.data.incomeCount && !this.data.expenseCategoryCount) {
-      if (!(CategoryElements.getBoxRight('expense').children[0] instanceof HTMLButtonElement)) return true;
+      if (CategoryElements.getBoxRight('expense').children[0] instanceof HTMLButtonElement) return true;
     }
     return;
   }
