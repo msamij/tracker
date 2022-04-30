@@ -8,42 +8,68 @@ import { viewState } from 'app';
 export function handleOverlayEvent(): void {
   ViewElements.getOverlay().addEventListener('click', () => {
     PopupMenuDOM.togglePopupMenu(viewState.state.menuType, ViewElements.getOverlay(), 'hidden', '0');
+    if (viewState.state.updateButtonClicked) {
+      PopupMenuDOM.toggleDateInputField('category', true);
+      PopupMenuDOM.toggleDateInputField('item', true);
+    }
   });
 }
 
-export function HandlePopupMenuEvent(): void {
+export function handlePopupMenuEvent(): void {
   ViewElements.getContainer().addEventListener('click', event => {
     if (
       (event.target as HTMLButtonElement).closest('.add-income-category') ||
       (event.target as HTMLButtonElement).closest('.add-expense-category')
     ) {
-      viewState.state.buttonType = PopupMenuDOM.getPopupMenuClickedButton(event);
       viewState.state.menuType = PopupMenuElements.getPopupMenu('category');
-
+      viewState.state.buttonType = PopupMenuDOM.getPopupMenuClickedButton(event);
       PopupMenuDOM.togglePopupMenu(viewState.state.menuType, ViewElements.getOverlay(), 'visible', '1');
-    } else if (
+    }
+    //
+    else if (
       (event.target as HTMLButtonElement).closest('.add-income') ||
       (event.target as HTMLButtonElement).closest('.add-expense')
     ) {
       viewState.state.menuType = PopupMenuElements.getPopupMenu('item');
       viewState.state.buttonType = PopupMenuDOM.getPopupMenuClickedButton(event);
-
       PopupMenuDOM.togglePopupMenu(viewState.state.menuType, ViewElements.getOverlay(), 'visible', '1');
     }
   });
 }
 
-export function HandleAddNewItemEvent(submitCategoryForm: Function, submitIncomeAndExpenseForm: Function): void {
+export function handleFormSubmitEvent(
+  addCategory: Function,
+  addIncomeAndExpense: Function,
+  updateCategory: Function,
+  updateIncomeAndExpense: Function
+): void {
   [PopupMenuElements.getPopupMenu('category'), PopupMenuElements.getPopupMenu('item')].forEach(el => {
     el.addEventListener('submit', event => {
       event.preventDefault();
-      viewState.updateStateOnAddNewElement();
+      viewState.updateState();
       PopupMenuDOM.clearInputFields(viewState.state.menuType);
       PopupMenuDOM.togglePopupMenu(viewState.state.menuType, ViewElements.getOverlay(), 'hidden', '0');
 
-      if (viewState.state.buttonType === 'add-income-category' || viewState.state.buttonType === 'add-expense-category')
-        submitCategoryForm();
-      else submitIncomeAndExpenseForm();
+      if (viewState.state.updateButtonClicked) {
+        PopupMenuDOM.toggleDateInputField('category', true);
+        PopupMenuDOM.toggleDateInputField('item', true);
+      }
+
+      if (
+        viewState.state.buttonType === 'add-income-category' ||
+        viewState.state.buttonType === 'add-expense-category'
+      ) {
+        addCategory();
+      } else if (viewState.state.buttonType === 'add-income' || viewState.state.buttonType === 'add-expense') {
+        addIncomeAndExpense();
+      } else if (
+        viewState.state.buttonType === 'edit-income-category' ||
+        viewState.state.buttonType === 'edit-expense-category'
+      ) {
+        updateCategory();
+      } else if (viewState.state.buttonType === 'edit-income' || viewState.state.buttonType === 'edit-expense') {
+        updateIncomeAndExpense();
+      }
     });
   });
 }
@@ -61,7 +87,9 @@ export function handleBudgetPaginationEvent(paginateBudget: Function): void {
       viewState.state.currentExpenseCategoryPage = 1;
       viewState.state.currentExpensePage = 1;
       paginateBudget();
-    } else if (
+    }
+    //
+    else if (
       (event.target as HTMLButtonElement).closest('.btn-prev-month') &&
       viewState.state.currentBudgetPage !== 1
     ) {
@@ -85,7 +113,9 @@ export function handleIncomeCategoryPaginationEvent(paginateIncomeCategory: Func
       viewState.state.currentIncomeCategoryPage += 1;
       viewState.state.currentIncomePage = 1;
       paginateIncomeCategory();
-    } else if (
+    }
+    //
+    else if (
       (event.target as HTMLButtonElement).closest('.btn-prev-income-category') &&
       viewState.state.currentIncomeCategoryPage !== 1
     ) {
@@ -106,7 +136,9 @@ export function handleExpenseCategoryPaginationEvent(paginateExpenseCategory: Fu
       viewState.state.currentExpenseCategoryPage += 1;
       viewState.state.currentExpensePage = 1;
       paginateExpenseCategory();
-    } else if (
+    }
+    //
+    else if (
       (event.target as HTMLButtonElement).closest('.btn-prev-expense-category') &&
       viewState.state.currentExpenseCategoryPage !== 1
     ) {
@@ -126,7 +158,9 @@ export function handleIncomePaginationEvent(paginateIncome: Function): void {
     ) {
       viewState.state.currentIncomePage += 1;
       paginateIncome();
-    } else if (
+    }
+    //
+    else if (
       (event.target as HTMLButtonElement).closest('.btn-prev-income') &&
       viewState.state.currentIncomePage !== 1
     ) {
@@ -145,7 +179,9 @@ export function handleExpensePaginationEvent(paginateExpense: Function): void {
     ) {
       viewState.state.currentExpensePage += 1;
       paginateExpense();
-    } else if (
+    }
+    //
+    else if (
       (event.target as HTMLButtonElement).closest('.btn-prev-expense') &&
       viewState.state.currentExpensePage !== 1
     ) {
@@ -175,4 +211,46 @@ export function handleDeleteIncomeAndExpenseEvent(deleteIncome: Function, delete
       });
     }
   );
+}
+
+export function handlePopupMenuUpdateEvent(): void {
+  [
+    CategoryElements.getFormElement('incomes'),
+    CategoryElements.getFormElement('expenses'),
+    IncomeAndExpenseElements.getFormElement('incomes'),
+    IncomeAndExpenseElements.getFormElement('expenses'),
+  ].forEach(el => {
+    el.addEventListener('click', event => {
+      event.preventDefault();
+      if (
+        (event.target as HTMLButtonElement).closest('.btn-edit-income-category') ||
+        (event.target as HTMLButtonElement).closest('.btn-edit-expense-category')
+      ) {
+        viewState.state.updateButtonClicked = true;
+        viewState.state.menuType = PopupMenuElements.getPopupMenu('category');
+        if ((event.target as HTMLButtonElement).closest('.btn-edit-income-category')) {
+          viewState.state.buttonType = 'edit-income-category';
+        } else if ((event.target as HTMLButtonElement).closest('.btn-edit-expense-category')) {
+          viewState.state.buttonType = 'edit-expense-category';
+        }
+        PopupMenuDOM.toggleDateInputField('category', false);
+        PopupMenuDOM.togglePopupMenu(viewState.state.menuType, ViewElements.getOverlay(), 'visible', '1');
+      }
+      //
+      else if (
+        (event.target as HTMLButtonElement).closest('.btn-edit-income') ||
+        (event.target as HTMLButtonElement).closest('.btn-edit-expense')
+      ) {
+        viewState.state.updateButtonClicked = true;
+        viewState.state.menuType = PopupMenuElements.getPopupMenu('item');
+        if ((event.target as HTMLButtonElement).closest('.btn-edit-income')) {
+          viewState.state.buttonType = 'edit-income';
+        } else if ((event.target as HTMLButtonElement).closest('.btn-edit-expense')) {
+          viewState.state.buttonType = 'edit-expense';
+        }
+        PopupMenuDOM.toggleDateInputField('item', false);
+        PopupMenuDOM.togglePopupMenu(viewState.state.menuType, ViewElements.getOverlay(), 'visible', '1');
+      }
+    });
+  });
 }

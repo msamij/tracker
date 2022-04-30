@@ -11,6 +11,7 @@ interface Category {
 export class ViewState {
   private viewState = {
     menuType: null,
+    updateButtonClicked: false,
     prevCount: 0,
     buttonType: '',
     inputDate: '',
@@ -27,22 +28,33 @@ export class ViewState {
 
   constructor(private popupMenuEl: PopupMenu, private categoryEl: Category) {}
 
-  updateStateOnAddNewElement(): void {
-    let type1: 'category' | 'item', type2: 'income' | 'expense';
-    if (this.viewState.buttonType === 'add-income-category' || this.viewState.buttonType === 'add-expense-category') {
-      type1 = 'category';
-      type2 = 'income';
+  updateState(): void {
+    let inputType: 'category' | 'item', categoryType: 'income' | 'expense';
+    if (
+      this.viewState.buttonType === 'add-income-category' ||
+      this.viewState.buttonType === 'add-expense-category' ||
+      this.viewState.buttonType === 'edit-income-category' ||
+      this.viewState.buttonType === 'edit-expense-category'
+    ) {
+      inputType = 'category';
+      categoryType = 'income';
     } else {
-      type1 = 'item';
-      type2 = this.viewState.buttonType === 'add-income' ? 'income' : 'expense';
+      inputType = 'item';
+      categoryType = this.viewState.buttonType === 'add-income' ? 'income' : 'expense';
     }
 
-    this.viewState.inputDate = this.popupMenuEl.getInputDate(type1);
-    this.viewState.inputTitle = this.popupMenuEl.getInputTitle(type1);
-    this.viewState.categoryDate = this.categoryEl.getCategoryDate(type2);
-    if (this.viewState.buttonType === 'add-income' || this.viewState.buttonType === 'add-expense') {
+    if (!this.viewState.updateButtonClicked) this.viewState.inputDate = this.popupMenuEl.getInputDate(inputType);
+
+    this.viewState.inputTitle = this.popupMenuEl.getInputTitle(inputType);
+    this.viewState.categoryDate = this.categoryEl.getCategoryDate(categoryType);
+    if (
+      this.viewState.buttonType === 'add-income' ||
+      this.viewState.buttonType === 'add-expense' ||
+      this.viewState.buttonType === 'edit-income' ||
+      this.viewState.buttonType === 'edit-expense'
+    ) {
       this.viewState.inputAmount = this.popupMenuEl.getInputAmount();
-      this.viewState.categoryTitle = this.categoryEl.getCategoryTitle(type2);
+      this.viewState.categoryTitle = this.categoryEl.getCategoryTitle(categoryType);
     }
   }
 

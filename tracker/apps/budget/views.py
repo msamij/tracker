@@ -3,8 +3,7 @@ import json
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.http.response import HttpResponse
-from django.shortcuts import redirect, render
-from django.urls.base import reverse
+from django.shortcuts import render
 from tracker.apps.users.models import User
 
 from .forms import BudgetForm
@@ -22,6 +21,7 @@ def budget_menu(request):
                                    Income_Category, Expense_Category, Income, Expense)
     form = BudgetForm()
     context['form'] = form
+
     return render(request, 'main.html', context)
 
 
@@ -41,9 +41,6 @@ def get_budget(request):
 
 
 def save_category(request, inc_or_exp):
-    if request.method != 'POST':
-        return redirect(reverse('budget-menu'))
-
     data = json.load(request)
     data['user'] = User.objects.get(username=request.user.username)
     type_obj = {
@@ -69,9 +66,6 @@ def save_category(request, inc_or_exp):
 
 
 def save_income_and_expense(request, inc_or_exp):
-    if request.method != 'POST':
-        return redirect(reverse('budget-menu'))
-
     data = json.load(request)
     user = User.objects.get(username=request.user.username)
     type_of_category = {
@@ -144,3 +138,69 @@ def delete_income_and_expense(request, inc_or_exp):
         expense.delete()
 
     return HttpResponse('success', status=200)
+
+
+def update_category(request, inc_or_exp):
+    user_id = User.objects.get(username=request.user.username).id
+
+    year = request.GET.get('year')
+    month = request.GET.get('month')
+    title = request.GET.get('title')
+    newTitle = request.GET.get('newTitle')
+
+    if inc_or_exp == 'income':
+        income_category = Income_Category.objects.filter(
+            user=user_id, date__month=month, date__year=year, title=title)[0]
+
+        income_category.title = newTitle
+        income_category.save()
+    else:
+        expense_category = Expense_Category.objects.filter(
+            user=user_id, date__month=month, date__year=year, title=title)[0]
+
+        expense_category.title = newTitle
+        expense_category.save()
+
+    return HttpResponse('success', status=200)
+
+
+def update_income_and_expense(request, inc_or_exp):
+    user_id = User.objects.get(username=request.user.username).id
+    year = request.GET.get('year')
+    month = request.GET.get('month')
+    title = request.GET.get('title')
+    newTitle = request.GET.get('newTitle')
+    newAmount = request.GET.get('newAmount')
+    category_title = request.GET.get('categoryTitle')
+
+    budget = Budget.objects.filter(
+        date__month=month, date__year=year, user=user_id)[0]
+
+    if inc_or_exp == 'income':
+        income = Income.objects.filter(
+            date__month=month, date__year=year, title=title, category=Income_Category.objects.filter(
+                user=user_id, date__month=month, date__year=year, title=category_title)[:1][0].id)[0]
+        prev_amount = income.amount
+        income.amount = newAmount
+        income.title = newTitle
+        income.save()
+        budget.budget -= prev_amount
+        budget.budget += int(newAmount)
+        budget.save()
+    else:
+        expense = Expense.objects.filter(
+            date__month=month, date__year=year, title=title, category=Expense_Category.objects.filter(
+                user=user_id, date__month=month, date__year=year, title=category_title)[:1][0].id)[0]
+        prev_amount = expense.amount
+        expense.amount = newAmount
+        expense.title = newTitle
+        expense.save()
+        budget.budget += prev_amount
+        budget.budget -= int(newAmount)
+        budget.save()
+
+    data = {
+        'budget': budget.budget
+    }
+
+    return JsonResponse(data, status=200, safe=False)

@@ -1,4 +1,4 @@
-import { processDeleteRequest, processGetRequest, processPostRequest } from '@AJAX/Ajax';
+import { processDeleteRequest, processGetRequest, processPostRequest, processUpdateRequest } from '@AJAX/Ajax';
 import { BUDGET_MENU_URL } from '@utils/config';
 import { constructDate } from '@utils/helpers';
 
@@ -72,6 +72,33 @@ export async function requestDeleteIncomeAndExpense(
   await processDeleteRequest(
     `${BUDGET_MENU_URL}delete-${type}/?month=${month}&year=${year}&title=${title}&categoryTitle=${categoryTitle}`
   );
+}
+
+export async function requestUpdateCategory(
+  type: 'income' | 'expense',
+  year: string,
+  month: string,
+  title: string,
+  newTitle: string
+): Promise<void> {
+  await processUpdateRequest(
+    `${BUDGET_MENU_URL}update-${type}-category/?month=${month}&year=${year}&title=${title}&newTitle=${newTitle}`
+  );
+}
+
+export async function requestUpdateIncomeAndExpense(
+  type: 'income' | 'expense',
+  year: string,
+  month: string,
+  title: string,
+  newTitle: string,
+  categoryTitle: string,
+  newAmount: string
+): Promise<Model> {
+  const result = await processUpdateRequest(
+    `${BUDGET_MENU_URL}update-${type}/?month=${month}&year=${year}&title=${title}&newTitle=${newTitle}&categoryTitle=${categoryTitle}&newAmount=${newAmount}`
+  );
+  return JSON.parse(result);
 }
 
 export async function getJsonDataAsString(url: string): Promise<Model> {

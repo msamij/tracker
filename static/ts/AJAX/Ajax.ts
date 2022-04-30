@@ -41,7 +41,29 @@ export async function processGetRequest(url: string): Promise<string> {
 
 export async function processDeleteRequest(url: string): Promise<void> {
   try {
-    await fetch(url);
+    await fetch(url, {
+      method: 'DELETE',
+      headers: {
+        'X-CSRFToken': csrfToken('csrftoken'),
+      },
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+}
+
+export async function processUpdateRequest(url: string): Promise<string> {
+  try {
+    const response = await fetch(url, {
+      method: 'PUT',
+      headers: {
+        'X-CSRFToken': csrfToken('csrftoken'),
+      },
+    });
+    const responseText = response.text().then(function (res) {
+      return res;
+    });
+    return responseText;
   } catch (error) {
     throw new Error(error);
   }

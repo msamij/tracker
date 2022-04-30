@@ -1,3 +1,5 @@
+import { InputDateComponent } from '@components/input';
+
 /**
  * This class provide APi's to interact with the popupmenu,
  * and this cannot be instantiated.
@@ -76,5 +78,19 @@ export class PopupMenuDOM {
     menuType.style.opacity = opacity;
     overlay.style.visibility = visibility;
     overlay.style.opacity = opacity;
+  }
+
+  static toggleDateInputField(type: 'category' | 'item', toggle: boolean): void {
+    if (toggle) {
+      const inputDateComponent = new InputDateComponent(
+        +(document.querySelector(`.menu__${type}`) as HTMLFormElement).dataset.value,
+        document.querySelector(`.menu__${type}`)
+      );
+      inputDateComponent.renderComponent('afterbegin', inputDateComponent.getComponentMarkup(type));
+      (document.querySelector(`.menu__${type}`) as HTMLFormElement).dataset.value = '1';
+    } else {
+      (document.querySelector(`.menu__${type}`) as HTMLFormElement).dataset.value = '0';
+      document.querySelector(`.input__date${type === 'category' ? '--category' : ''}`).remove();
+    }
   }
 }

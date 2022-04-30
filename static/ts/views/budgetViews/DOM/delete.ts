@@ -95,7 +95,7 @@ export class DeleteCategory extends DeleteItem {
   }
 
   async delete(): Promise<void> {
-    // All these must be done in the same order.
+    // All these must be done in this exact order.
     await this.deleteCategory();
     await this.updateBudget();
 
@@ -210,7 +210,7 @@ export class DeleteIncomeAndExpense extends DeleteItem {
   }
 
   async delete(): Promise<void> {
-    // All these must be done in the same order.
+    // All these must be done in this exact order.
     await this.deleteIncomeAndExpense();
     await this.updateBudget();
 
