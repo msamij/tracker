@@ -9,4 +9,3 @@ build/
 
 # Byte compiled
 **/__pycache__/
-*.txt
